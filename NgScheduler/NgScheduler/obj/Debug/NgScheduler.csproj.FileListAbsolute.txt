@@ -1,0 +1,5 @@
+D:\AngularJs\NgScheduler\NgScheduler\bin\NgScheduler.dll
+D:\AngularJs\NgScheduler\NgScheduler\bin\NgScheduler.pdb
+D:\AngularJs\NgScheduler\NgScheduler\obj\Debug\NgScheduler.csprojResolveAssemblyReference.cache
+D:\AngularJs\NgScheduler\NgScheduler\obj\Debug\NgScheduler.dll
+D:\AngularJs\NgScheduler\NgScheduler\obj\Debug\NgScheduler.pdb
