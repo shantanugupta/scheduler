@@ -3,7 +3,6 @@
 <head>
     <title></title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
-
 </head>
 <body ng-controller="scheduleController">
     <div class="container-fluid">
@@ -61,6 +60,10 @@
                 <label class="checkbox-inline">
                     <input type="checkbox" value="{{freqIntervalWeeklyE.key}}">{{freqIntervalWeeklyE.value}}</label>
             </div>
+        </div>
+        
+        <div class="row">
+            <div ng-include src="'/app/view/DailySchedule.html'"></div>
         </div>
     </div>
 
