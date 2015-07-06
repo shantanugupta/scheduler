@@ -4,88 +4,122 @@
     <title></title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
 </head>
-<body ng-controller="scheduleController">
-    <div class="container-fluid">
-        <div class="clearfix"></div>
-        <div ng-init="selected=1">
-            <ul class="nav nav-tabs">
-                <li ng-class="{'active' : selected==1 }"  ><a data-toggle="tab" ng-click="selected=1" href="#freqType1">One time</a></li>
-                <li ng-class="{'active' : selected==4 }"  ><a data-toggle="tab" ng-click="selected=4" href="#freqType4">Daily</a></li>
-                <li ng-class="{'active' : selected==8 }"  ><a data-toggle="tab" ng-click="selected=8" href="#freqType8">Weekly</a></li>
-                <li ng-class="{'active' : selected==16 }" ><a data-toggle="tab" ng-click="selected=16" href="#freqType16">Monthly</a></li>
-                <li ng-class="{'active' : selected==32 }" ><a data-toggle="tab" ng-click="selected=32" href="#freqType32">Monthly Relative</a></li>
-                <li ng-class="{'active' : selected==64 }" ><a data-toggle="tab" ng-click="selected=64" href="#freqType64">Yearly</a></li>
-                <li ng-class="{'active' : selected==128 }"><a data-toggle="tab" ng-click="selected=128" href="#freqType128">Year long</a></li>
-            </ul>
-            <div class="tab-content">
-                <div class="tab-pane" ng-class="{'active' : selected==1 }" id="freqType1">
-                    <one-time-only></one-time-only>
-                </div>
-                <div class="tab-pane" ng-class="{'active' : selected==4 }" id="freqType4">
-                    <daily-schedule></daily-schedule>
-                </div>
-                <div class="tab-pane" ng-class="{'active' : selected==8 }" id="freqType8">
-                    <weekly-schedule></weekly-schedule>
-                </div>
-                <div class="tab-pane" ng-class="{'active' : selected==16 }" id="freqType16">
-                    <monthly-schedule></monthly-schedule>
-                </div>
-                <div class="tab-pane" ng-class="{'active' : selected==32 }" id="freqType32">
-                    <monthly-relative-schedule></monthly-relative-schedule>
-                </div>
-                <div class="tab-pane" ng-class="{'active' : selected==64 }" id="freqType64">
-                    <yearly-schedule></yearly-schedule>
-                </div>
-                <div class="tab-pane" ng-class="{'active' : selected==128 }" id="freqType128">
-                    <year-long-schedule></year-long-schedule>
+<body>
+    <div class="container" ng-controller="scheduleController">
+        <form class="form" role="form" style="margin-top: 1em;">
+            <div class="row">
+                <div class="well">
+                    <div class="form-group">
+                        <label for="scheduleName">Please enter your schedule name here</label>
+                        <input type="text" id="scheduleName" class="form-control" placeholder="SCHEDULE NAME" aria-describedby="basic-addon1" />
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-2" ng-hide="true">
-                <div class="form-group">
-                    <label for="freqTypeDropdown">Event type</label>
-                    <select id="freqTypeDropdown" class="form-control" data-toggle="popover" data-trigger="hover" data-content="Please select schedule type."
-                        ng-model="inputfreqTypeE" ng-options="freqTypeE.key as freqTypeE.value for freqTypeE in scheduler.freqType">
-                    </select>
-                </div>
-            </div>
-            <div class="col-lg-2">
-                <div class="form-group">
-                    <label for="freqIntervalWeeklyDropdown">Select day of the week</label>
-                    <select id="freqIntervalWeeklyDropdown" class="form-control" data-toggle="tooltip" data-placement="right" title="Please select schedule type."
-                        ng-model="inputfreqIntervalWeeklyE" ng-options="freqIntervalWeeklyE.key as freqIntervalWeeklyE.value for freqIntervalWeeklyE in scheduler.freqIntervalWeekly">
-                    </select>
-                </div>
-            </div>
-            <div class="col-lg-2">
-                <div class="form-group">
-                    <label for="freqRelativeIntervalDropdown">Select (N)th day</label>
-                    <select id="freqRelativeIntervalDropdown" class="form-control" data-toggle="popover" data-trigger="hover" data-content="Please select schedule type."
-                        ng-model="inputfreqRelativeIntervalE" ng-options="freqRelativeIntervalE.key as freqRelativeIntervalE.value for freqRelativeIntervalE in scheduler.freqRelativeInterval">
-                    </select>
-                </div>
-            </div>
-            <div class="col-lg-2">
-                <div class="form-group">
-                    <label for="freqSubdayTypeDropdown">Select time unit</label>
-                    <select id="freqSubdayTypeDropdown" class="form-control" data-toggle="popover" data-trigger="hover" data-content="Please select schedule type."
-                        ng-model="inputfreqSubdayTypeE" ng-options="freqSubdayTypeE.key as freqSubdayTypeE.value for freqSubdayTypeE in scheduler.freqSubdayType">
-                    </select>
-                </div>
-            </div>
-            <div class="col-lg-2">
-                <div class="form-group">
-                    <label for="freqIntervalMonthlyRelativeDropdown">Select day of month</label>
-                    <select id="freqIntervalMonthlyRelativeDropdown" class="form-control" data-toggle="popover" data-trigger="hover" data-content="Please select schedule type."
-                        ng-model="inputfreqIntervalMonthlyRelativeE" ng-options="freqIntervalMonthlyRelativeE.key as freqIntervalMonthlyRelativeE.value for freqIntervalMonthlyRelativeE in scheduler.freqIntervalMonthlyRelative">
-                    </select>
-                </div>
-            </div>
-        </div>
 
+            <div class="row">
+                <div ng-init="selected=1">
+                    <ul class="nav nav-tabs">
+                        <li ng-class="{'active' : selected==1 }"><a data-toggle="tab" ng-click="selected=1" href="#freqType1">One time</a></li>
+                        <li ng-class="{'active' : selected==4 }"><a data-toggle="tab" ng-click="selected=4" href="#freqType4">Daily</a></li>
+                        <li ng-class="{'active' : selected==8 }"><a data-toggle="tab" ng-click="selected=8" href="#freqType8">Weekly</a></li>
+                        <li ng-class="{'active' : selected==16 }"><a data-toggle="tab" ng-click="selected=16" href="#freqType16">Monthly</a></li>
+                        <li ng-class="{'active' : selected==32 }"><a data-toggle="tab" ng-click="selected=32" href="#freqType32">Monthly Relative</a></li>
+                        <li ng-class="{'active' : selected==64 }"><a data-toggle="tab" ng-click="selected=64" href="#freqType64">Yearly</a></li>
+                        <li ng-class="{'active' : selected==128 }"><a data-toggle="tab" ng-click="selected=128" href="#freqType128">Year long</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane" ng-class="{'active' : selected==1 }" id="freqType1">
+                            <one-time-only></one-time-only>
+                        </div>
+                        <div class="tab-pane" ng-class="{'active' : selected==4 }" id="freqType4">
+                            <daily-schedule></daily-schedule>
+                        </div>
+                        <div class="tab-pane" ng-class="{'active' : selected==8 }" id="freqType8">
+                            <weekly-schedule></weekly-schedule>
+                        </div>
+                        <div class="tab-pane" ng-class="{'active' : selected==16 }" id="freqType16">
+                            <monthly-schedule></monthly-schedule>
+                        </div>
+                        <div class="tab-pane" ng-class="{'active' : selected==32 }" id="freqType32">
+                            <monthly-relative-schedule></monthly-relative-schedule>
+                        </div>
+                        <div class="tab-pane" ng-class="{'active' : selected==64 }" id="freqType64">
+                            <yearly-schedule></yearly-schedule>
+                        </div>
+                        <div class="tab-pane" ng-class="{'active' : selected==128 }" id="freqType128">
+                            <year-long-schedule></year-long-schedule>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" ng-hide="true">
+                    <div class="col-lg-2" ng-hide="true">
+                        <div class="form-group">
+                            <label for="freqTypeDropdown">Event type</label>
+                            <select id="freqTypeDropdown" class="form-control" data-toggle="popover" data-trigger="hover" data-content="Please select schedule type."
+                                ng-model="inputfreqTypeE" ng-options="freqTypeE.key as freqTypeE.value for freqTypeE in scheduler.freqType">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <div class="form-group">
+                            <label for="freqIntervalWeeklyDropdown">Select day of the week</label>
+                            <select id="freqIntervalWeeklyDropdown" class="form-control" data-toggle="tooltip" data-placement="right" title="Please select schedule type."
+                                ng-model="inputfreqIntervalWeeklyE" ng-options="freqIntervalWeeklyE.key as freqIntervalWeeklyE.value for freqIntervalWeeklyE in scheduler.freqIntervalWeekly">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <div class="form-group">
+                            <label for="freqRelativeIntervalDropdown">Select (N)th day</label>
+                            <select id="freqRelativeIntervalDropdown" class="form-control" data-toggle="popover" data-trigger="hover" data-content="Please select schedule type."
+                                ng-model="inputfreqRelativeIntervalE" ng-options="freqRelativeIntervalE.key as freqRelativeIntervalE.value for freqRelativeIntervalE in scheduler.freqRelativeInterval">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <div class="form-group">
+                            <label for="freqSubdayTypeDropdown">Select time unit</label>
+                            <select id="freqSubdayTypeDropdown" class="form-control" data-toggle="popover" data-trigger="hover" data-content="Please select schedule type."
+                                ng-model="inputfreqSubdayTypeE" ng-options="freqSubdayTypeE.key as freqSubdayTypeE.value for freqSubdayTypeE in scheduler.freqSubdayType">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <div class="form-group">
+                            <label for="freqIntervalMonthlyRelativeDropdown">Select day of month</label>
+                            <select id="freqIntervalMonthlyRelativeDropdown" class="form-control" data-toggle="popover" data-trigger="hover" data-content="Please select schedule type."
+                                ng-model="inputfreqIntervalMonthlyRelativeE" ng-options="freqIntervalMonthlyRelativeE.key as freqIntervalMonthlyRelativeE.value for freqIntervalMonthlyRelativeE in scheduler.freqIntervalMonthlyRelative">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-lg-12">
+                        <label for="durationNumber">Duration</label>
+                            </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <input type="number" id="durationNumber" class="form-control" placeholder="Duration" min="0" max="100" />
+                        </div>
+                        <div class="col-lg-6">
+                            <select id="durationUnit" class="form-control" data-toggle="popover" data-trigger="hover"
+                                ng-model="inputfreqSubdayTypeE" ng-options="freqSubdayTypeE.key as freqSubdayTypeE.value for freqSubdayTypeE in scheduler.freqSubdayType">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="well">
+                    Description goes here
+                </div>
+            </div>
+        </form>
     </div>
-
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="Scripts/angular.min.js"></script>

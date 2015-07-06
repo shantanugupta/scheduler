@@ -1,8 +1,10 @@
-﻿<div>
-    Occurance date <input type="date" /> time <input type="time" />
-    Duration of this event is <input type="number" /> 
-        <select id="freqSubdayTypeDropdown" class="form-control" data-toggle="popover" data-trigger="hover" data-content="Please select schedule type."
-                        ng-model="inputfreqSubdayTypeE" ng-options="freqSubdayTypeE.key as freqSubdayTypeE.value for freqSubdayTypeE in scheduler.freqSubdayType">
-                    </select>
-
+﻿<div class="well">
+    <div class="form-group">
+        <label for="occuranceDate">Occurance date</label>
+        <input type="date" id="occuranceDate" class="form-control" placeholder="Date" />
+    </div>
+    <div class="form-group">
+        <label for="occuranceTime">Time</label>
+        <input type="time" id="occuranceTime" class="form-control" placeholder="Time" />
+    </div>    
 </div>
