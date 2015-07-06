@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" ng-app="myAppModule">
+<html xmlns="http://www.w3.org/1999/xhtml" ng-app="appModule">
 <head>
     <title></title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
@@ -7,14 +7,42 @@
 <body ng-controller="scheduleController">
     <div class="container-fluid">
         <div class="clearfix"></div>
-        <div>
+        <div ng-init="selected=1">
             <ul class="nav nav-tabs">
-                <li id="{{'li' +freqTypeE.key}}" ng-class="{active: freqTypeE.key==inputfreqTypeE}"
-                    ng-repeat="freqTypeE in scheduler.freqType"><a href="#">{{freqTypeE.value}}</a></li>
+                <li ng-class="{'active' : selected==1 }"  ><a data-toggle="tab" ng-click="selected=1" href="#freqType1">One time</a></li>
+                <li ng-class="{'active' : selected==4 }"  ><a data-toggle="tab" ng-click="selected=4" href="#freqType4">Daily</a></li>
+                <li ng-class="{'active' : selected==8 }"  ><a data-toggle="tab" ng-click="selected=8" href="#freqType8">Weekly</a></li>
+                <li ng-class="{'active' : selected==16 }" ><a data-toggle="tab" ng-click="selected=16" href="#freqType16">Monthly</a></li>
+                <li ng-class="{'active' : selected==32 }" ><a data-toggle="tab" ng-click="selected=32" href="#freqType32">Monthly Relative</a></li>
+                <li ng-class="{'active' : selected==64 }" ><a data-toggle="tab" ng-click="selected=64" href="#freqType64">Yearly</a></li>
+                <li ng-class="{'active' : selected==128 }"><a data-toggle="tab" ng-click="selected=128" href="#freqType128">Year long</a></li>
             </ul>
+            <div class="tab-content">
+                <div class="tab-pane" ng-class="{'active' : selected==1 }" id="freqType1">
+                    <one-time-only></one-time-only>
+                </div>
+                <div class="tab-pane" ng-class="{'active' : selected==4 }" id="freqType4">
+                    <daily-schedule></daily-schedule>
+                </div>
+                <div class="tab-pane" ng-class="{'active' : selected==8 }" id="freqType8">
+                    <weekly-schedule></weekly-schedule>
+                </div>
+                <div class="tab-pane" ng-class="{'active' : selected==16 }" id="freqType16">
+                    <monthly-schedule></monthly-schedule>
+                </div>
+                <div class="tab-pane" ng-class="{'active' : selected==32 }" id="freqType32">
+                    <monthly-relative-schedule></monthly-relative-schedule>
+                </div>
+                <div class="tab-pane" ng-class="{'active' : selected==64 }" id="freqType64">
+                    <yearly-schedule></yearly-schedule>
+                </div>
+                <div class="tab-pane" ng-class="{'active' : selected==128 }" id="freqType128">
+                    <year-long-schedule></year-long-schedule>
+                </div>
+            </div>
         </div>
         <div class="row">
-            <div class="col-lg-2">
+            <div class="col-lg-2" ng-hide="true">
                 <div class="form-group">
                     <label for="freqTypeDropdown">Event type</label>
                     <select id="freqTypeDropdown" class="form-control" data-toggle="popover" data-trigger="hover" data-content="Please select schedule type."
@@ -55,79 +83,18 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="checkbox-inline" ng-repeat="freqIntervalWeeklyE in scheduler.freqIntervalWeekly">
-                <label class="checkbox-inline">
-                    <input type="checkbox" value="{{freqIntervalWeeklyE.key}}">{{freqIntervalWeeklyE.value}}</label>
-            </div>
-        </div>
-        
-        <div class="row">
-            <div ng-include src="'/app/view/DailySchedule.html'"></div>
-        </div>
+
     </div>
 
-
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="Scripts/angular.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="app/app.js"></script>
+    <script src="app/controller/scheduleController.js"></script>
+
     <script>
-        var myapp = angular.module('myAppModule', []);
-
-        function scheduleController($scope) {
-            $scope.scheduler =
-                {
-                    freqType:
-                        [{ key: 1, value: 'One time' }
-                        , { key: 4, value: 'Daily' }
-                        , { key: 8, value: 'Weekly' }
-                        , { key: 16, value: 'Monthly' }
-                        , { key: 32, value: 'Monthly Relative' }
-                        , { key: 64, value: 'Yearly' }
-                        , { key: 128, value: 'Year long' }],
-
-                    freqIntervalWeekly:
-                            [{ key: 1, value: 'Monday' }
-                            , { key: 2, value: 'Tuesday' }
-                            , { key: 4, value: 'Wednesday' }
-                            , { key: 8, value: 'Thursday' }
-                            , { key: 16, value: 'Friday' }
-                            , { key: 32, value: 'Saturday' }
-                            , { key: 64, value: 'Sunday' }],
-
-                    freqRelativeInterval:
-                            [{ key: 0, value: 'Not applicable' }
-                            , { key: 1, value: 'First' }
-                            , { key: 2, value: 'Second' }
-                            , { key: 4, value: 'Third' }
-                            , { key: 8, value: 'Fourth' }
-                            , { key: 16, value: 'Last' }],
-
-                    freqSubdayType:
-                            [{ key: 1, value: 'At specified time' }
-                            , { key: 2, value: 'Hour(s)' }
-                            , { key: 4, value: 'Minute(s)' }
-                            , { key: 8, value: 'Second(s)' }],
-
-                    freqIntervalMonthlyRelative:
-                            [{ key: 1, value: 'Monday' }
-                            , { key: 2, value: 'Tuesday' }
-                            , { key: 3, value: 'Wednesday' }
-                            , { key: 4, value: 'Thursday' }
-                            , { key: 5, value: 'Friday' }
-                            , { key: 6, value: 'Saturday' }
-                            , { key: 7, value: 'Sunday' }
-                            , { key: 8, value: 'Day' }
-                            , { key: 9, value: 'Weekday' }
-                            , { key: 10, value: 'Weekend day' }]
-                };//eof scheduler
-        }
-
-        myapp.controller('scheduleController', scheduleController);
-
         $(document).ready(function () {
             $('[data-toggle="popover"]').popover({ container: 'body' });
-            //$('[data-toggle="tooltip"]').tooltip();
         });
     </script>
 </body>

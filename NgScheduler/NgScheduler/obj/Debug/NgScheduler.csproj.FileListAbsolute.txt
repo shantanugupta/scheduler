@@ -9,3 +9,8 @@ E:\Git\scheduler\NgScheduler\NgScheduler\bin\NgScheduler.pdb
 E:\Git\scheduler\NgScheduler\NgScheduler\obj\Debug\NgScheduler.csprojResolveAssemblyReference.cache
 E:\Git\scheduler\NgScheduler\NgScheduler\obj\Debug\NgScheduler.dll
 E:\Git\scheduler\NgScheduler\NgScheduler\obj\Debug\NgScheduler.pdb
+D:\Git\scheduler\NgScheduler\NgScheduler\bin\NgScheduler.dll
+D:\Git\scheduler\NgScheduler\NgScheduler\bin\NgScheduler.pdb
+D:\Git\scheduler\NgScheduler\NgScheduler\obj\Debug\NgScheduler.csprojResolveAssemblyReference.cache
+D:\Git\scheduler\NgScheduler\NgScheduler\obj\Debug\NgScheduler.dll
+D:\Git\scheduler\NgScheduler\NgScheduler\obj\Debug\NgScheduler.pdb

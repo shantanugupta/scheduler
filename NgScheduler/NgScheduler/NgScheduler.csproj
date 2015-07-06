@@ -57,6 +57,15 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="app\app.js" />
+    <Content Include="app\controller\scheduleController.js" />
+    <Content Include="app\view\YearLongSchedule.html" />
+    <Content Include="app\view\YearlySchedule.html" />
+    <Content Include="app\view\MonthlyRelativeSchedule.html" />
+    <Content Include="app\view\WeeklySchedule.html" />
+    <Content Include="app\view\MonthlySchedule.html" />
+    <Content Include="app\view\DailySchedule.html" />
+    <Content Include="app\view\OneTimeOnly.html" />
     <Content Include="Content\ui-bootstrap-csp.css" />
     <Content Include="Index.html" />
     <Content Include="Scripts\angular-mocks.js" />
@@ -85,9 +94,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="app\controller\" />
     <Folder Include="app\service\" />
-    <Folder Include="app\view\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
