@@ -2,6 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" ng-app="appModule">
 <head>
     <title></title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
 </head>
 <body>
@@ -15,7 +17,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="row">
                 <div ng-init="selected=1">
                     <ul class="nav nav-tabs">
@@ -29,25 +30,53 @@
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane" ng-class="{'active' : selected==1 }" id="freqType1">
-                            <one-time-only></one-time-only>
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <one-time-only></one-time-only>
+                                </div>
+                            </div>
                         </div>
                         <div class="tab-pane" ng-class="{'active' : selected==4 }" id="freqType4">
-                            <daily-schedule></daily-schedule>
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <daily-schedule></daily-schedule>
+                                </div>
+                            </div>
                         </div>
                         <div class="tab-pane" ng-class="{'active' : selected==8 }" id="freqType8">
-                            <weekly-schedule></weekly-schedule>
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <weekly-schedule></weekly-schedule>
+                                </div>
+                            </div>
                         </div>
                         <div class="tab-pane" ng-class="{'active' : selected==16 }" id="freqType16">
-                            <monthly-schedule></monthly-schedule>
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <monthly-schedule></monthly-schedule>
+                                </div>
+                            </div>
                         </div>
                         <div class="tab-pane" ng-class="{'active' : selected==32 }" id="freqType32">
-                            <monthly-relative-schedule></monthly-relative-schedule>
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <monthly-relative-schedule></monthly-relative-schedule>
+                                </div>
+                            </div>
                         </div>
                         <div class="tab-pane" ng-class="{'active' : selected==64 }" id="freqType64">
-                            <yearly-schedule></yearly-schedule>
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <yearly-schedule></yearly-schedule>
+                                </div>
+                            </div>
                         </div>
                         <div class="tab-pane" ng-class="{'active' : selected==128 }" id="freqType128">
-                            <year-long-schedule></year-long-schedule>
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <year-long-schedule></year-long-schedule>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -98,8 +127,8 @@
                 <div class="form-group">
                     <div class="row">
                         <div class="col-lg-12">
-                        <label for="durationNumber">Duration</label>
-                            </div>
+                            <label for="durationNumber">Duration</label>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-lg-6">
@@ -120,16 +149,16 @@
             </div>
         </form>
     </div>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <!--    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="Scripts/angular.min.js"></script>
+    <script src="Scripts/angular.min.js"></script>-->
     <script src="app/app.js"></script>
     <script src="app/controller/scheduleController.js"></script>
 
-    <script>
+    <!--    <script>
         $(document).ready(function () {
             $('[data-toggle="popover"]').popover({ container: 'body' });
         });
-    </script>
+    </script>-->
 </body>
 </html>
