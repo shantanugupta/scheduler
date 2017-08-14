@@ -4,7 +4,7 @@
     <title></title>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />	
 </head>
 <body>
     <div class="container" ng-controller="scheduleController">
@@ -13,12 +13,12 @@
                 <div class="well">
                     <div class="form-group">
                         <label for="scheduleName">Please enter your schedule name here</label>
-                        <input type="text" id="scheduleName" class="form-control" placeholder="SCHEDULE NAME" aria-describedby="basic-addon1" />
+                        <input type="text" id="scheduleName" ng-model="scheduleName" class="form-control" placeholder="SCHEDULE NAME" aria-describedby="basic-addon1" />
                     </div>
                 </div>
             </div>
             <div class="row">
-                <div ng-init="selected=1">
+                <div ng-init="selected=16">
                     <ul class="nav nav-tabs">
                         <li ng-class="{'active' : selected==1 }"><a data-toggle="tab" ng-click="selected=1" href="#freqType1">One time</a></li>
                         <li ng-class="{'active' : selected==4 }"><a data-toggle="tab" ng-click="selected=4" href="#freqType4">Daily</a></li>
@@ -144,7 +144,7 @@
             </div>
             <div class="row">
                 <div class="well">
-                    Description goes here
+                    {{description}}
                 </div>
             </div>
         </form>

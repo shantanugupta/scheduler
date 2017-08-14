@@ -1,2 +1,15 @@
-﻿
-    Monthly relative schedule
+﻿<div class="row">
+    <div class="col-lg-12">
+        <div class="form-group form-inline">
+            <div>
+                <select id="durationUnit" class="form-control" data-toggle="popover" data-trigger="hover"
+                        ng-model="freqRelativeIntervalValue" ng-options="f.key as f.value for f in scheduler.freqRelativeInterval"></select>
+                <select id="durationUnit" class="form-control" data-toggle="popover" data-trigger="hover"
+                        ng-model="freqIntervalMonthlyRelativeValue" ng-options="g.key as g.value for g in scheduler.freqIntervalMonthlyRelative"></select>
+                <label class="control-label" for="recurrEvery">OF EVERY</label>
+                <input id="recurrEvery" name="date" class="form-control text-uppercase" ng-model="mthmonth" placeholder="MONTH" type="number" min="1" max="60" />
+            </div>
+        </div>
+    </div>
+</div>
+<Frequency-Schedule></Frequency-Schedule>

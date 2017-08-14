@@ -1,5 +1,7 @@
 ﻿'use strict';
 app.controller('scheduleController', function scheduleController($scope) {
+	$scope.description = 'Description goes here';
+	$scope.scheduleName = 'Default schedule name';
     $scope.scheduler =
         {
             freqType:

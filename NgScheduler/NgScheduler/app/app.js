@@ -48,3 +48,10 @@ app.directive('yearLongSchedule', function () {
         templateUrl: "app/view/YearLongSchedule.html"
     };
 });
+
+app.directive('frequencySchedule', function () {
+    return {
+        restrict: 'E',
+        templateUrl: "app/view/FrequencySchedule.html"
+    };
+});
