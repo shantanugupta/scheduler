@@ -13,65 +13,65 @@
                 <div class="well">
                     <div class="form-group">
                         <label for="scheduleName">Please enter your schedule name here</label>
-                        <input type="text" id="scheduleName" ng-model="scheduleName" class="form-control" placeholder="SCHEDULE NAME" aria-describedby="basic-addon1" />
+                        <input type="text" id="scheduleName" ng-model="name" class="form-control" placeholder="SCHEDULE NAME" aria-describedby="basic-addon1" />
                     </div>
                 </div>
             </div>
             <div class="row">
-                <div ng-init="selected=16">
+                <div ng-init="freq_type=16">
                     <ul class="nav nav-tabs">
-                        <li ng-class="{'active' : selected==1 }"><a data-toggle="tab" ng-click="selected=1" href="#freqType1">One time</a></li>
-                        <li ng-class="{'active' : selected==4 }"><a data-toggle="tab" ng-click="selected=4" href="#freqType4">Daily</a></li>
-                        <li ng-class="{'active' : selected==8 }"><a data-toggle="tab" ng-click="selected=8" href="#freqType8">Weekly</a></li>
-                        <li ng-class="{'active' : selected==16 }"><a data-toggle="tab" ng-click="selected=16" href="#freqType16">Monthly</a></li>
-                        <li ng-class="{'active' : selected==32 }"><a data-toggle="tab" ng-click="selected=32" href="#freqType32">Monthly Relative</a></li>
-                        <li ng-class="{'active' : selected==64 }"><a data-toggle="tab" ng-click="selected=64" href="#freqType64">Yearly</a></li>
-                        <li ng-class="{'active' : selected==128 }"><a data-toggle="tab" ng-click="selected=128" href="#freqType128">Year long</a></li>
+                        <li ng-class="{'active' : freq_type==1 }"><a data-toggle="tab" ng-click="freq_type=1" href="#freqType1">One time</a></li>
+                        <li ng-class="{'active' : freq_type==4 }"><a data-toggle="tab" ng-click="freq_type=4" href="#freqType4">Daily</a></li>
+                        <li ng-class="{'active' : freq_type==8 }"><a data-toggle="tab" ng-click="freq_type=8" href="#freqType8">Weekly</a></li>
+                        <li ng-class="{'active' : freq_type==16 }"><a data-toggle="tab" ng-click="freq_type=16" href="#freqType16">Monthly</a></li>
+                        <li ng-class="{'active' : freq_type==32 }"><a data-toggle="tab" ng-click="freq_type=32" href="#freqType32">Monthly Relative</a></li>
+                        <li ng-class="{'active' : freq_type==64 }"><a data-toggle="tab" ng-click="freq_type=64" href="#freqType64">Yearly</a></li>
+                        <li ng-class="{'active' : freq_type==128 }"><a data-toggle="tab" ng-click="freq_type=128" href="#freqType128">Year long</a></li>
                     </ul>
                     <div class="tab-content">
-                        <div class="tab-pane" ng-class="{'active' : selected==1 }" id="freqType1">
+                        <div class="tab-pane" ng-class="{'active' : freq_type==1 }" id="freqType1">
                             <div class="panel panel-default">
                                 <div class="panel-body">
                                     <one-time-only></one-time-only>
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane" ng-class="{'active' : selected==4 }" id="freqType4">
+                        <div class="tab-pane" ng-class="{'active' : freq_type==4 }" id="freqType4">
                             <div class="panel panel-default">
                                 <div class="panel-body">
                                     <daily-schedule></daily-schedule>
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane" ng-class="{'active' : selected==8 }" id="freqType8">
+                        <div class="tab-pane" ng-class="{'active' : freq_type==8 }" id="freqType8">
                             <div class="panel panel-default">
                                 <div class="panel-body">
                                     <weekly-schedule></weekly-schedule>
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane" ng-class="{'active' : selected==16 }" id="freqType16">
+                        <div class="tab-pane" ng-class="{'active' : freq_type==16 }" id="freqType16">
                             <div class="panel panel-default">
                                 <div class="panel-body">
                                     <monthly-schedule></monthly-schedule>
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane" ng-class="{'active' : selected==32 }" id="freqType32">
+                        <div class="tab-pane" ng-class="{'active' : freq_type==32 }" id="freqType32">
                             <div class="panel panel-default">
                                 <div class="panel-body">
                                     <monthly-relative-schedule></monthly-relative-schedule>
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane" ng-class="{'active' : selected==64 }" id="freqType64">
+                        <div class="tab-pane" ng-class="{'active' : freq_type==64 }" id="freqType64">
                             <div class="panel panel-default">
                                 <div class="panel-body">
                                     <yearly-schedule></yearly-schedule>
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane" ng-class="{'active' : selected==128 }" id="freqType128">
+                        <div class="tab-pane" ng-class="{'active' : freq_type==128 }" id="freqType128">
                             <div class="panel panel-default">
                                 <div class="panel-body">
                                     <year-long-schedule></year-long-schedule>

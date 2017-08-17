@@ -1,9 +1,14 @@
-﻿<div class="row">
+﻿<!-- 
+freq_recurrence_factor 
+scheduler.freqIntervalWeekly
+-->
+
+<div class="row">
     <div class="col-lg-12">
         <div class="form-group">
             <div>
-                <label class="control-label" for="recurrEvery">RECURRS EVERY {{nDays}} WEEK(S)</label>
-                <input id="recurrEvery" name="date" class="form-control text-uppercase" ng-model="nDays" placeholder="WEEK(S)" type="number" min="1" max="100" />
+                <label class="control-label" for="recurrEvery">RECURRS EVERY {{freq_recurrence_factor}} WEEK(S)</label>
+                <input id="recurrEvery" name="date" class="form-control text-uppercase" ng-model="freq_recurrence_factor" placeholder="WEEK(S)" type="number" min="1" max="100" />
             </div>
         </div>
     </div>

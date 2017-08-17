@@ -1,9 +1,20 @@
+<!--
+active_start_date
+active_end_date
+active_start_time
+freq_subday_interval
+freq_subday_type
+active_start_time
+active_end_time
+scheduler.freqSubdayType
+-->
+
 <div class="row">
     <div class="col-lg-6">
         <div class="form-group">
             <div>
                 <label class="control-label" for="startingDate">STARTING FROM</label>
-                <input id="startingDate" name="date" class="form-control text-uppercase" type="date" />
+                <input id="startingDate" name="date" class="form-control text-uppercase" type="date" ng-model="active_start_date" />
             </div>
         </div>
     </div>
@@ -11,7 +22,7 @@
         <div class="form-group">
             <div>
                 <label class="control-label" for="endingDate">AVAILABLE UNTIL</label>
-                <input id="endingDate" name="date" class="form-control text-uppercase" type="date" />
+                <input id="endingDate" name="date" class="form-control text-uppercase" type="date" ng-model="active_end_date" />
             </div>
         </div>
     </div>
@@ -19,13 +30,13 @@
 <div class="row">
     <div class="col-lg-12 form-inline form-group">
         <div class="form-group">
-            <label class="radio-inline control-label" for="recurrEvery">
-                <strong><input type="radio" name="recurrEveryRadio" />OCCUR ONCE</strong>
+            <label class="radio-inline control-label" for="occurOnceRadio">
+                <strong><input id="occurOnceRadio" type="radio" name="recurrEveryRadio" />OCCUR ONCE</strong>
             </label>
         </div>
         <div class="form-group">
             <label for="recurrEvery" class="control-label">AT</label>
-            <input name="time" class="form-control text-uppercase" type="time" ng-model="startAtTime">
+            <input name="time" class="form-control text-uppercase" type="time" ng-model="active_start_time">
         </div>
     </div>
 </div>
@@ -35,17 +46,20 @@
             <label class="radio-inline control-label" for="recurrEvery">
                 <strong><input type="radio" name="recurrEveryRadio" />OCCUR EVERY</strong>
             </label>
-        </div>
-        <input type="number" id="durationNumber" class="form-control" placeholder="Duration" min="0" max="100" />
+        </div>		
+        <input type="number" id="durationNumber" class="form-control" placeholder="Duration" 
+				min="{{freqSubdayTypeMinMax[freq_subday_type].min}}" max="{{freqSubdayTypeMinMax[freq_subday_type].max}}" ng-model="freq_subday_interval" />		
         <select id="durationUnit" class="form-control" data-toggle="popover" data-trigger="hover"
-                ng-model="inputfreqSubdayTypeE" ng-options="freqSubdayTypeE.key as freqSubdayTypeE.value for freqSubdayTypeE in scheduler.freqSubdayType"></select>
+                ng-model="freq_subday_type" ng-options="freqSubdayTypeE.key as freqSubdayTypeE.value for freqSubdayTypeE in scheduler.freqSubdayType">
+		</select>
+		
         <div class="form-group">
             <label class="control-label" for="recurrEvery">STARTING TIME</label>
-            <input name="time" class="form-control text-uppercase" type="time" ng-model="startAtTime">
+            <input name="time" class="form-control text-uppercase" type="time" ng-model="active_start_time">
         </div>
         <div class="form-group">
             <label class="control-label" for="recurrEvery">END TIME</label>
-            <input name="time" class="form-control text-uppercase" type="time" ng-model="startAtTime">
+            <input name="time" class="form-control text-uppercase" type="time" ng-model="active_end_time">
         </div>
     </div>
 </div>

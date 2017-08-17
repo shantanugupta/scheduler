@@ -1,9 +1,13 @@
-﻿<div class="row">
+﻿<!-- 
+freq_interval 
+-->
+
+<div class="row">
     <div class="col-lg-12">
         <div class="form-group">
             <div>
-                <label class="control-label" for="recurrEvery">RECURRS EVERY {{nDays}} DAYS</label>
-                <input id="recurrEvery" name="date" class="form-control text-uppercase" ng-model="nDays" placeholder="DAY(S)" type="number" min="1" max="100" />
+                <label class="control-label" for="recurrEvery">RECURRS EVERY {{freq_interval}} DAYS</label>
+                <input id="recurrEvery" name="date" class="form-control text-uppercase" ng-model="freq_interval" placeholder="DAY(S)" type="number" min="1" max="100" />
             </div>
         </div>
     </div>

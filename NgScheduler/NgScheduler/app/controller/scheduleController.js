@@ -1,7 +1,9 @@
 ﻿'use strict';
 app.controller('scheduleController', function scheduleController($scope) {
 	$scope.description = 'Description goes here';
-	$scope.scheduleName = 'Default schedule name';
+	$scope.name = 'Default schedule name'; //schedule name
+	$scope.freq_type = 4;
+	
     $scope.scheduler =
         {
             freqType:
@@ -48,5 +50,21 @@ app.controller('scheduleController', function scheduleController($scope) {
                     , { key: 9, value: 'Weekday' }
                     , { key: 10, value: 'Weekend day' }]
         };//eof scheduler
+
+	$scope.freqSubdayTypeMinMax = {
+		'1': { min: 1, max: 100 },
+		'2': { min: 1, max: 24 },
+		'4': { min: 1, max: 60 },
+		'8': { min: 1, max: 60 },
+	};		
+	
+	$scope.getGetOrdinal =  function(n) {
+		if(n==undefined){
+			return "Nth"			
+		}
+    var s=["th","st","nd","rd"],
+    v=n%100;
+    return n+(s[(v-20)%10]||s[v]||s[0]);
+ }
 
 });
