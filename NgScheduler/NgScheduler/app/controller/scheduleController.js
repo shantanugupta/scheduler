@@ -1,5 +1,5 @@
 ﻿'use strict';
-app.controller('scheduleController', function scheduleController($scope) {
+app.controller('scheduleController', ['$scope', '$filter', function scheduleController($scope, $filter) {
 	$scope.description = 'Description goes here';
 	$scope.name = 'Default schedule name'; //schedule name
 	$scope.freq_type = 4;
@@ -67,4 +67,31 @@ app.controller('scheduleController', function scheduleController($scope) {
     return n+(s[(v-20)%10]||s[v]||s[0]);
  }
 
-});
+ $scope.active_start_date = "20170818"; //Note that 'Z' means UTC 0
+ $scope.active_start_time = "210900"; //Note that 'Z' means UTC 0
+ $scope.active_end_time = "235900"; //Note that 'Z' means UTC 0
+ 
+// $scope.results = $filter('date')($scope.active_start_date, "yyyyMMdd");
+	
+ $scope.mySchedule = {
+		name : 'Default schedule name'
+		, description : 'Description goes here'
+		, freq_type : 1 //onetime, daily, weekly, monthly, monthly relative
+				
+		, freq_interval : 0 
+		, freq_relative_interval : 0
+		, freq_recurrence_factor : 0
+		
+		, active_start_date : 20170818
+		, active_end_date : 99991231
+		, active_start_time : 210900
+		, active_end_time : 235959		
+		
+		, freq_subday_type : 0
+		, freq_subday_interval : 0
+		
+		, duration_subday_type : 1 //duration in (hour, min, sec)		
+		, duration_interval : 0 //duration value
+ };
+   
+}]);
