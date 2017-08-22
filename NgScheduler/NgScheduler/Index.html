@@ -8,16 +8,17 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />	
 </head>
 <body>
-    <div class="container" ng-controller="scheduleController">
+    <div class="container-fluid" ng-controller="scheduleController">
         <form class="form" role="form" style="margin-top: 1em;">
+		<div class=col-lg-8>
             <div class="row">
-                <div class="well">
+                <div>
                     <div class="form-group">
                         <label for="scheduleName">Please enter your schedule name here</label>
                         <input type="text" id="scheduleName" ng-model="schedule.name" class="form-control" placeholder="SCHEDULE NAME" aria-describedby="basic-addon1" />
                     </div>
                 </div>
-            </div>
+            </div>			
             <div class="row">
                 <div ng-init="freq_type=16">
                     <ul class="nav nav-tabs">
@@ -88,7 +89,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+			</div>
             <div class="row">
                 <div class="form-group">
                     <div class="row">
@@ -112,8 +113,14 @@
                 <div class="well">
                     {{schedule.description}}
                 </div>
-            </div>
-        </form>
+            </div>		
+        </div>
+		<div class="col-lg-4">
+			<div>
+				<pre>{{schedule | json}}</pre>
+			</div>
+		</div>
+		</form>
     </div>
     <!--    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>

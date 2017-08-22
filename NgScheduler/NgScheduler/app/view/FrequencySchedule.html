@@ -48,9 +48,11 @@ scheduler.freqSubdayType
             </label>
         </div>		
         <input type="number" id="durationNumber" class="form-control" placeholder="Duration" 
-				min="{{freqSubdayTypeMinMax[freq_subday_type].min}}" max="{{freqSubdayTypeMinMax[freq_subday_type].max}}" ng-model="schedule.freq_subday_interval" />		
+				min="{{freqSubdayTypeMinMax[schedule.freq_subday_type].min}}" 
+				max="{{freqSubdayTypeMinMax[schedule.freq_subday_type].max}}" ng-model="schedule.freq_subday_interval" />		
         <select id="durationUnit" class="form-control" data-toggle="popover" data-trigger="hover"
-                ng-model="schedule.freq_subday_type" ng-options="freqSubdayTypeE.key as freqSubdayTypeE.value for freqSubdayTypeE in scheduler.freqSubdayType">
+                ng-model="schedule.freq_subday_type" 
+				ng-options="freqSubdayTypeE.key as freqSubdayTypeE.value for freqSubdayTypeE in scheduler.freqSubdayType">
 		</select>
 		
         <div class="form-group">
@@ -58,7 +60,7 @@ scheduler.freqSubdayType
             <input name="time" class="form-control text-uppercase" type="time" ng-model="schedule.active_start_time">
         </div>
         <div class="form-group">
-            <label class="control-label" for="recurrEvery">END TIME</label>
+            <label class="control-label" for="recurrEvery">END TIME: {{schedule.active_end_time}}</label>
             <input name="time" class="form-control text-uppercase" type="time" ng-model="schedule.active_end_time">
         </div>
     </div>
