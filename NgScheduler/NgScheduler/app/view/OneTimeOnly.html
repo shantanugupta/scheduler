@@ -6,16 +6,16 @@ active_start_time
 <div class="col-lg-6">
     <div class="form-group">
         <div>
-            <label class="control-label" for="date">START AT {{active_start_date}}, {{results}}</label>
-            <input name="date" class="form-control text-uppercase" type="date" ng-model="active_start_date">
+            <label class="control-label" for="date">START AT {{schedule.active_start_date}}, {{schedule.results}}</label>
+            <input name="date" class="form-control text-uppercase" type="date" ng-model="schedule.active_start_date">
         </div>
     </div>
 </div>
 <div class="col-lg-6">
     <div class="form-group">
         <div>
-            <label class="control-label" for="time">TIME {{active_start_time}}</label>
-            <input name="time" class="form-control text-uppercase" type="time" ng-model="active_start_time">
+            <label class="control-label" for="time">TIME {{schedule.active_start_time}}</label>
+            <input name="time" class="form-control text-uppercase" type="time" ng-model="schedule.active_start_time">
         </div>
     </div>
 </div>

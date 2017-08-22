@@ -7,10 +7,10 @@ freq_recurrence_factor
     <div class="col-lg-12">
         <div class="form-group form-inline">
             <div>
-                <label class="control-label" for="recurrEvery">{{getGetOrdinal(freq_interval)}} OF EVERY</label>
-                <label class="control-label" for="recurrEvery">{{freq_recurrence_factor}} MONTH(S)</label>
-                <input id="recurrEvery" name="date" class="form-control text-uppercase" ng-model="freq_interval" placeholder="DAY" type="number" min="1" max="31" />
-                <input id="recurrEvery" name="date" class="form-control text-uppercase" ng-model="freq_recurrence_factor" placeholder="MONTH" type="number" min="1" max="60" />
+                <label class="control-label" for="recurrEvery">{{getGetOrdinal(schedule.freq_interval)}} OF EVERY</label>
+                <label class="control-label" for="recurrEvery">{{schedule.freq_recurrence_factor}} MONTH(S)</label>
+                <input id="recurrEvery" name="date" class="form-control text-uppercase" ng-model="schedule.freq_interval" placeholder="DAY" type="number" min="1" max="31" />
+                <input id="recurrEvery" name="date" class="form-control text-uppercase" ng-model="schedule.freq_recurrence_factor" placeholder="MONTH" type="number" min="1" max="60" />
             </div>
         </div>
     </div>

@@ -10,12 +10,12 @@ scheduler.freqIntervalMonthlyRelative
         <div class="form-group form-inline">
             <div>
                 <select id="durationUnit" class="form-control" data-toggle="popover" data-trigger="hover"
-                        ng-model="freq_relative_interval" ng-options="f.key as f.value for f in scheduler.freqRelativeInterval"></select>
+                        ng-model="schedule.freq_relative_interval" ng-options="f.key as f.value for f in scheduler.freqRelativeInterval"></select>
                 <select id="durationUnit" class="form-control" data-toggle="popover" data-trigger="hover"
-                        ng-model="freq_interval" ng-options="g.key as g.value for g in scheduler.freqIntervalMonthlyRelative"></select>
+                        ng-model="schedule.freq_interval" ng-options="g.key as g.value for g in scheduler.freqIntervalMonthlyRelative"></select>
                 <label class="control-label" for="recurrEvery">OF EVERY</label>
                 <input id="recurrEvery" name="date" class="form-control text-uppercase" 
-					ng-model="freq_recurrence_factor" placeholder="MONTH" type="number" min="1" max="60" />
+					ng-model="schedule.freq_recurrence_factor" placeholder="MONTH" type="number" min="1" max="60" />
             </div>
         </div>
     </div>
