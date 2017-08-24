@@ -20,8 +20,9 @@ scheduler.freqIntervalWeekly
             <strong>ON</strong>
 
             <div class="checkbox-inline" ng-repeat="freqIntervalWeeklyE in scheduler.freqIntervalWeekly">
-                <label class="checkbox-inline">
-                    <input type="checkbox" value="{{freqIntervalWeeklyE.key}}">{{freqIntervalWeeklyE.value}}
+				<label class="checkbox-inline">				
+                    <input type="checkbox" value="{{freqIntervalWeeklyE.key}}" 						
+						ng-click="checkboxChanged(freqIntervalWeeklyE.key, $index)">{{freqIntervalWeeklyE.value}}
                 </label>
             </div>
         </div>

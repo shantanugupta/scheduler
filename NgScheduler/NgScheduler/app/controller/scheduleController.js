@@ -82,10 +82,10 @@ app.controller('scheduleController', ['$scope', '$filter', function scheduleCont
 		, freq_relative_interval : 0
 		, freq_recurrence_factor : 0
 		
-		, active_start_date : 20170818
-		, active_end_date : 99991231
-		, active_start_time : 210900
-		, active_end_time : 235959		
+		, active_start_date : new Date()
+		, active_end_date : new Date()
+		, active_start_time : new Date()
+		, active_end_time : new Date()
 		
 		, freq_subday_type : 0
 		, freq_subday_interval : 0
@@ -95,135 +95,157 @@ app.controller('scheduleController', ['$scope', '$filter', function scheduleCont
 };
 
 $scope.$watch('schedule',function(newForm, oldForm) {
-				console.log(newForm.name);				
+				console.log(newForm.name);	
+				$scope.schedule.description = generateScheduleDescription();
              }, true	);
 			 
-function GenerateScheduleDescription()
+function generateScheduleDescription()
         {
             var desc = "Occurs";            
-            
-            switch ($scope.freq_type)
-            {
+            var sch = $scope.schedule;
+			
+			
+			var f = sch.freq_type;
+            switch (f)
+            {				
                 case 1://FreqType.OneTimeOnly:
-                    desc = desc + " on " + $scope.active_start_date.getDate() + " at " 
-                        + $scope.active_start_time.getTime();
+                    desc = desc + " on " + sch.active_start_date.toLocaleDateString() + " at " 
+                        + sch.active_start_time.toLocaleTimeString();
                     break;
                 case 4://FreqType.Daily:
-                    desc = desc + " every " + $scope.freq_interval + " day(s)";
+                    desc = desc + " every " +sch.freq_interval + " day(s)";
                     break;
                 case 8://FreqType.Weekly:
-                    desc += " every " + $scope.freq_recurrence_factor + " week(s) ";
+                    desc += " every " + sch.freq_recurrence_factor + " week(s) ";
                     var selectedWeekdays = '';
                     var loop = 1;
                     while (loop <= 7)
                     {
-                        int power = (int)System.Math.Pow(2, loop - 1);
-                        if (($scope.freq_interval & power) == power)
+                        var power = Math.pow(2, loop - 1);
+                        if ((sch.freq_interval & power) == power)
                         {
-                            selectedWeekdays += DateTime.Parse("1996/12/0" + loop.ToString()).DayOfWeek.ToString() + ", ";
+							var val = $scope.scheduler.freqIntervalWeekly.filter(function(f){if(f.key == power) return f;})[0].value;
+                            selectedWeekdays += val + ", ";							
                         }
                         
                         loop++;
                     }
                     desc += "on " + selectedWeekdays;
-                    if (desc.EndsWith(", ") == true)
+                    if (desc.endsWith(", ") == true)
                     {
-                        desc = desc.Substring(0, desc.Length - 2);
+                        desc = desc.substr(0, desc.length - 2);
                     }
                     break;
                 case 16://FreqType.Monthly:
-                    desc += " every " + $scope.freq_recurrence_factor + " month(s) on day " + $scope.freq_interval + " of that month";
+                    desc += " every " + sch.freq_recurrence_factor + " month(s) on day " + sch.freq_interval + " of that month";
                     break;
                 case 32://FreqType.MonthlyRelativeToFreqInterval:
-                    desc += " every " + $scope.freq_recurrence_factor + " month(s) on the ";
+                    desc += " every " + sch.freq_recurrence_factor + " month(s) on the ";
 
                     var freq_rel_intv = '';
-                    var fri = $scope.freq_relative_interval;
+                    var fri = sch.freq_relative_interval;
                     switch (fri)
                     {
                         case 1://FreqRelativeInterval.First:
-                            $scope.freq_rel_intv += "first";
+                            sch.freq_rel_intv += "first";
                             break;
                         case 2://FreqRelativeInterval.Second:
-                            $scope.freq_rel_intv += "second";
+                            sch.freq_rel_intv += "second";
                             break;
                         case 4://FreqRelativeInterval.Third:
-                            $scope.freq_rel_intv += "third";
+                            sch.freq_rel_intv += "third";
                             break;
                         case 8://FreqRelativeInterval.Fourth:
-                            $scope.freq_rel_intv += "fourth";
+                            sch.freq_rel_intv += "fourth";
                             break;
                         case 16://FreqRelativeInterval.Last:
-                            $scope.freq_rel_intv += "last";
+                            sch.freq_rel_intv += "last";
                             break;
                     }
 
-                    var freq_intv_str = string.Empty;
-                    var fimr = (FreqIntervalMonthlyRelative)$scope.freq_interval;
+                    var freq_intv_str = '';
+                    var fimr = sch.freq_interval;
 
 					if (fimr >= 7 && fimr < 8)
                     //if (fimr >= FreqIntervalMonthlyRelative.Sunday && fimr < FreqIntervalMonthlyRelative.Day)
                     {
-                        $scope.freq_intv_str = DateTime.Parse("1996/12/0" + $scope.freq_interval).DayOfWeek.ToString();
+						sch.freq_intv_str = sch.freq_interval;
+                        //$scope.freq_intv_str = DateTime.Parse("1996/12/0" + $scope.freq_interval).DayOfWeek.ToString();
                     }
                     else if (fimr == 8)//FreqIntervalMonthlyRelative.Day)
                     {
-                        $scope.freq_intv_str = "day";
+                        sch.freq_intv_str = "day";
                     }
                     else if (fimr == 9)//FreqIntervalMonthlyRelative.Weekday)
                     {
-                        $scope.freq_intv_str = "week day";
+                        sch.freq_intv_str = "week day";
                     }
                     else if (fimr == 10)//FreqIntervalMonthlyRelative.WeekendDay)
                     {
-                        $scope.freq_intv_str = "weekend day";
+                        sch.freq_intv_str = "weekend day";
                     }
-                    desc += $scope.freq_rel_intv + " " + $scope.freq_intv_str + " of that month";
+                    desc += sch.freq_rel_intv + " " + sch.freq_intv_str + " of that month";
                     break;
             }//END SWITCH FreqType variations
 
             var freq_subday_type_str = '';
-            var s = $scope.freq_subday_type;
+            var s = sch.freq_subday_type;
             switch (s)
             {
                 case 1://FreqSubdayType.AtTheSpecifiedTime:
-                    $scope.freq_subday_type_str = " at " +$scope.active_start_time.getTime();
+                    freq_subday_type_str = " at " +sch.active_start_time.toLocaleTimeString();
                     break;
-                case 2://FreqSubdayType.Seconds:
-                    $scope.freq_subday_type_str = " every " + $scope.freq_subday_interval + " second(s)";
+                case 8://FreqSubdayType.Seconds:
+                    freq_subday_type_str = " every " + sch.freq_subday_interval + " second(s)";
                     break;
                 case 4://FreqSubdayType.Minutes:
-                    $scope.freq_subday_type_str = " every " + $scope.freq_subday_interval + " minute(s)";
+                    freq_subday_type_str = " every " + sch.freq_subday_interval + " minute(s)";
                     break;
-                case 8://FreqSubdayType.Hours:
-                    $scope.freq_subday_type_str = " every " + $scope.freq_subday_interval + " hour(s)";
+                case 2://FreqSubdayType.Hours:
+                    freq_subday_type_str = " every " + sch.freq_subday_interval + " hour(s)";
                     break;
             }
 
-            desc = desc + $scope.freq_subday_type_str;
+            desc = desc + freq_subday_type_str;
             if (s == 8 || s == 4 || s == 2)//if (s == FreqSubdayType.Hours || s == FreqSubdayType.Minutes || s == FreqSubdayType.Seconds)
-                desc = desc + " between " + $scope.active_start_time.getTime()
-                    + " and " + $scope.active_end_time.getTime();
+                desc = desc + " between " + sch.active_start_time.toLocaleTimeString()
+                    + " and " + sch.active_end_time.toLocaleTimeString();
 
-            var d = $scope.duration_subday_type;            
-			if (d == 8 || d == 4 || d == 2)//if (d == FreqSubdayType.Hours || d == FreqSubdayType.Minutes || d == FreqSubdayType.Seconds)
-                desc = desc + " for " + $scope.duration_interval + " " + d;
-
+            var d = sch.duration_subday_type;            
+			if (d == 8 || d == 4 || d == 2){//if (d == FreqSubdayType.Hours || d == FreqSubdayType.Minutes || d == FreqSubdayType.Seconds)
+				var freqSubdayType = $scope.scheduler.freqSubdayType.filter(function(f){if(f.key == d) return f;})[0].value;
+				desc = desc + " for " + sch.duration_interval + " " + freqSubdayType;
+			}
+			
             if (f != 1)//FreqType.OneTimeOnly)
             {
                 desc += ". Schedule will be used";
-                if ($scope.active_end_date ==null || $scope.active_end_date == 0)//if ($scope.active_end_date == Convert.ToInt32(Common.ConvertDateToInt(DateTime.MaxValue)) || active_end_date == 0)				
+                if (sch.active_end_date ==undefined || sch.active_end_date == 0)//if (sch.active_end_date == Convert.ToInt32(Common.ConvertDateToInt(DateTime.MaxValue)) || active_end_date == 0)				
                 {
-                    desc += " starting on " + $scope.active_start_date.getDate() + " with no end date";
+                    desc += " starting on " + sch.active_start_date.toLocaleDateString() + " with no end date";
                 }
                 else
                 {
-                    desc += " between " + $scope.active_start_date.getDate()
-                        + " and " + $scope.active_end_date.getDate();
+                    desc += " between " + sch.active_start_date.toLocaleDateString()
+                        + " and " + sch.active_end_date.toLocaleDateString();
                 }
             }
 
             desc += ".";
             return desc;
-        }			 
+        };
+
+	$scope.weeks = new Array(7);
+
+	$scope.checkboxChanged = function toggleSelection(e, c) {
+		if($scope.weeks[c]==undefined || $scope.weeks[c] == false){
+			$scope.weeks[c] = true;
+			$scope.schedule.freq_interval += e;
+		}
+		else if($scope.weeks[c] == true){
+			$scope.weeks[c] = false;
+			$scope.schedule.freq_interval -= e;
+		}
+	}
+
 }]);
