@@ -97,13 +97,17 @@ app.controller('scheduleController', ['$scope', '$filter', function scheduleCont
 $scope.$watch('schedule',function(newForm, oldForm) {
 				console.log(newForm.name);	
 				$scope.schedule.description = generateScheduleDescription();
-             }, true	);
+             }, true);
+			 
+$scope.$watch('occuranceChoice',function(newForm, oldForm) {
+				console.log(newForm.name);	
+				$scope.schedule.description = generateScheduleDescription();
+             });			 
 			 
 function generateScheduleDescription()
         {
             var desc = "Occurs";            
             var sch = $scope.schedule;
-			
 			
 			var f = sch.freq_type;
             switch (f)
@@ -207,8 +211,13 @@ function generateScheduleDescription()
             }
 
             desc = desc + freq_subday_type_str;
-            if (s == 8 || s == 4 || s == 2)//if (s == FreqSubdayType.Hours || s == FreqSubdayType.Minutes || s == FreqSubdayType.Seconds)
-                desc = desc + " between " + sch.active_start_time.toLocaleTimeString()
+			
+			if($scope.occuranceChoice==true){
+				desc += " once at " + sch.active_start_time.toLocaleTimeString();
+			}
+			
+            if ($scope.occuranceChoice==false && (s == 8 || s == 4 || s == 2))//if (s == FreqSubdayType.Hours || s == FreqSubdayType.Minutes || s == FreqSubdayType.Seconds)
+                desc +=  " between " + sch.active_start_time.toLocaleTimeString()
                     + " and " + sch.active_end_time.toLocaleTimeString();
 
             var d = sch.duration_subday_type;            
@@ -218,14 +227,12 @@ function generateScheduleDescription()
 			}
 			
             if (f != 1)//FreqType.OneTimeOnly)
-            {
+            {				
                 desc += ". Schedule will be used";
-                if (sch.active_end_date ==undefined || sch.active_end_date == 0)//if (sch.active_end_date == Convert.ToInt32(Common.ConvertDateToInt(DateTime.MaxValue)) || active_end_date == 0)				
-                {
+                if (sch.active_end_date ==undefined || sch.active_end_date == 0){//if (sch.active_end_date == Convert.ToInt32(Common.ConvertDateToInt(DateTime.MaxValue)) || active_end_date == 0)				                
                     desc += " starting on " + sch.active_start_date.toLocaleDateString() + " with no end date";
                 }
-                else
-                {
+                else{
                     desc += " between " + sch.active_start_date.toLocaleDateString()
                         + " and " + sch.active_end_date.toLocaleDateString();
                 }
@@ -233,7 +240,7 @@ function generateScheduleDescription()
 
             desc += ".";
             return desc;
-        };
+        };//end generateScheduleDescription
 
 	$scope.weeks = new Array(7);
 
