@@ -1,9 +1,8 @@
 ﻿'use strict';
 app.controller('scheduleController', ['$scope', '$filter', function scheduleController($scope, $filter) {
-	$scope.description = 'Description goes here';
-	$scope.name = 'Default schedule name'; //schedule name
 	$scope.freq_type = 4;
-	
+	$scope.weeks = new Array(7);
+
     $scope.scheduler =
         {
             freqType:
@@ -66,12 +65,6 @@ app.controller('scheduleController', ['$scope', '$filter', function scheduleCont
     v=n%100;
     return n+(s[(v-20)%10]||s[v]||s[0]);
  }
-
- //$scope.active_start_date = "20170818"; //Note that 'Z' means UTC 0
- //$scope.active_start_time = "210900"; //Note that 'Z' means UTC 0
- //$scope.active_end_time = "235900"; //Note that 'Z' means UTC 0
- 
-// $scope.results = $filter('date')($scope.active_start_date, "yyyyMMdd");
 	
  $scope.schedule = {
 		name : 'Default schedule name'
@@ -94,16 +87,29 @@ app.controller('scheduleController', ['$scope', '$filter', function scheduleCont
 		, duration_interval : 0 //duration value
 };
 
+//raise an event whenever any property in schedule object is changed
 $scope.$watch('schedule',function(newForm, oldForm) {
-				console.log(newForm.name);	
 				$scope.schedule.description = generateScheduleDescription();
-             }, true);
-			 
+             }, true);//deep watch
+
+//raise an event whenever occuranceChoice property is changed			 
 $scope.$watch('occuranceChoice',function(newForm, oldForm) {
-				console.log(newForm.name);	
 				$scope.schedule.description = generateScheduleDescription();
-             });			 
-			 
+             });//shhallow watch		 
+
+//identify the checkbox that has been checked based on index and calculate freq_interval			 
+$scope.checkboxChanged = function toggleSelection(e, c) {
+	if($scope.weeks[c]==undefined || $scope.weeks[c] == false){
+		$scope.weeks[c] = true;
+		$scope.schedule.freq_interval += e;
+	}
+	else if($scope.weeks[c] == true){
+		$scope.weeks[c] = false;
+		$scope.schedule.freq_interval -= e;
+	}
+}
+
+//evaluates description property of scheduler everything any UI property is changed
 function generateScheduleDescription()
         {
             var desc = "Occurs";            
@@ -122,6 +128,7 @@ function generateScheduleDescription()
                 case 8://FreqType.Weekly:
                     desc += " every " + sch.freq_recurrence_factor + " week(s) ";
                     var selectedWeekdays = '';
+					//generate weekday list from freq_interval i.e. 3 = {Monday, Tuesday}, 7 = {Monday, Tuesday, Wednesday}
                     var loop = 1;
                     while (loop <= 7)
                     {
@@ -241,18 +248,4 @@ function generateScheduleDescription()
             desc += ".";
             return desc;
         };//end generateScheduleDescription
-
-	$scope.weeks = new Array(7);
-
-	$scope.checkboxChanged = function toggleSelection(e, c) {
-		if($scope.weeks[c]==undefined || $scope.weeks[c] == false){
-			$scope.weeks[c] = true;
-			$scope.schedule.freq_interval += e;
-		}
-		else if($scope.weeks[c] == true){
-			$scope.weeks[c] = false;
-			$scope.schedule.freq_interval -= e;
-		}
-	}
-
 }]);
