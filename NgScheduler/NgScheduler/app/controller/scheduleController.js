@@ -65,7 +65,6 @@ app.controller('scheduleController', ['$scope', '$filter', 'moment', function sc
 		return n + (s[(v - 20) % 10] || s[v] || s[0]);
 	}
 
-	
 	//default schedule for one time event only
 	$scope.schedule = {
 		name: 'Default schedule name',
@@ -74,10 +73,10 @@ app.controller('scheduleController', ['$scope', '$filter', 'moment', function sc
 		freq_interval: 0,
 		freq_relative_interval: 0,
 		freq_recurrence_factor: 0,
-		active_start_date: moment(new Date()).startOf('day').toDate(),
-		active_end_date: moment(new Date()).startOf('day').toDate(),
-		active_start_time: moment(new Date()).startOf('hour').toDate(),
-		active_end_time: moment(new Date()).startOf('hour').toDate(),
+		active_start_date: moment().startOf('day').toDate(),
+		active_end_date: moment().startOf('day').toDate(),
+		active_start_time: moment().startOf('hour').toDate(),
+		active_end_time: moment().startOf('hour').toDate(),
 		freq_subday_type: 0,
 		freq_subday_interval: 0,
 		duration_subday_type: 1, //duration in (hour, min, sec)
@@ -106,11 +105,11 @@ app.controller('scheduleController', ['$scope', '$filter', 'moment', function sc
 			sc.freq_relative_interval = 0;
 			sc.freq_recurrence_factor = 0;
 
-			sc.active_start_date = moment(new Date()).startOf('day').toDate();
-			sc.active_start_time = moment(new Date()).startOf('hour').toDate();
+			sc.active_start_date = moment().startOf('day').toDate();
+			sc.active_start_time = moment().startOf('hour').toDate();
 
-			sc.active_end_date = moment(new Date()).startOf('day').toDate();
-			sc.active_end_time = moment(new Date()).startOf('hour').toDate();
+			sc.active_end_date = moment().startOf('day').toDate();
+			sc.active_end_time = moment().startOf('hour').toDate();
 
 			break;
 		case 4: //FreqType.Daily:
