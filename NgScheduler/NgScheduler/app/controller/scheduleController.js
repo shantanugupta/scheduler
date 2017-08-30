@@ -86,6 +86,13 @@ app.controller('scheduleController', ['$scope', '$filter', 'moment', function sc
 	//raise an event whenever any property in schedule object is changed
 	$scope.$watch('schedule', function (newForm, oldForm) {
 		$scope.schedule.description = generateScheduleDescription();
+		var e = generateEvents();
+		var s='';
+		var i=0;
+		for(i=0;i<e.length;i++){
+			s+='\nstart: ' + e[i].start.toISOString() + ', end: ' + e[i].end.toISOString();			
+		}
+		alert(s);
 	}, true); //deep watch
 
 	//raise an event whenever occuranceChoice property is changed			 
@@ -272,7 +279,60 @@ app.controller('scheduleController', ['$scope', '$filter', 'moment', function sc
 		desc += ".";
 		return desc;
 	}; //end generateScheduleDescription
+
+	function generateEvents(){
+		var events=[];
+		var sch = $scope.schedule;
+
+		var isValid = isScheduleValid(sch);
 		
+		var f = sch.freq_type;
+		switch (f) {
+		case 1: //FreqType.OneTimeOnly:
+			var startDate = moment(moment(sch.active_start_date).format('YYYY/MM/DD') 
+									+ ' ' + moment(sch.active_start_time).format('HH:mm')
+									, "YYYY-MM-DD HH:mm").toDate();
+			var endDate = moment(moment(sch.active_end_date).format('YYYY/MM/DD') 
+									+ ' ' + moment(sch.active_end_time).format('HH:mm')
+									, "YYYY-MM-DD HH:mm").toDate();
+						
+			if(sch.duration_interval > 0){
+				if(sch.duration_subday_type == 2){
+					endDate = moment(startDate).add(sch.duration_interval, 'hours');
+				}
+				else if(sch.duration_subday_type == 4){
+					endDate = moment(startDate).add(sch.duration_interval, 'minutes');
+				}
+				else if(sch.duration_subday_type == 8){
+					endDate = moment(startDate).add(sch.duration_interval, 'seconds');
+				}
+			}
+			events.push({start:startDate, end:endDate});			
+			
+			break;
+		case 4: //FreqType.Daily:
+			
+			break;
+		case 8: //FreqType.Weekly:
+						
+			break;
+		case 16: //FreqType.Monthly:
+			
+			break;
+		case 32: //FreqType.MonthlyRelativeToFreqInterval:
+			
+			break;
+		} //END SWITCH FreqType variations
+
+		
+		return events;
+	}
+	
+	function isScheduleValid(s){
+		//validate schedule here
+		return true;
+	}
+	
 	$scope.init=function(){
 		$scope.freq_type = 4;
 		$scope.weeks = new Array(7);			
