@@ -1,4 +1,6 @@
-﻿var app = angular.module('appModule', []);
+﻿var app = angular.module('appModule', ['angularMoment']);
+
+app.constant("moment", moment);
 
 app.directive('oneTimeOnly', function () {
     return {
@@ -116,3 +118,4 @@ app.directive('timeConverter', function($filter) {
         }
     };
 });
+

@@ -1,5 +1,8 @@
 ﻿'use strict';
-app.controller('scheduleController', ['$scope', '$filter', function scheduleController($scope, $filter) {
+app.controller('scheduleController', ['$scope', '$filter', 'moment', function scheduleController($scope, $filter, moment) {
+	
+	$scope.date = new moment();	 
+	 
     $scope.scheduler = {
             freqType:
                 [{ key: 1, value: 'One time' }
@@ -62,6 +65,7 @@ app.controller('scheduleController', ['$scope', '$filter', function scheduleCont
 		return n + (s[(v - 20) % 10] || s[v] || s[0]);
 	}
 
+	
 	//default schedule for one time event only
 	$scope.schedule = {
 		name: 'Default schedule name',
@@ -70,10 +74,10 @@ app.controller('scheduleController', ['$scope', '$filter', function scheduleCont
 		freq_interval: 0,
 		freq_relative_interval: 0,
 		freq_recurrence_factor: 0,
-		active_start_date: new Date(),
-		active_end_date: new Date(),
-		active_start_time: new Date(),
-		active_end_time: new Date(),
+		active_start_date: moment(new Date()).startOf('day').toDate(),
+		active_end_date: moment(new Date()).startOf('day').toDate(),
+		active_start_time: moment(new Date()).startOf('hour').toDate(),
+		active_end_time: moment(new Date()).startOf('hour').toDate(),
 		freq_subday_type: 0,
 		freq_subday_interval: 0,
 		duration_subday_type: 1, //duration in (hour, min, sec)
@@ -102,11 +106,11 @@ app.controller('scheduleController', ['$scope', '$filter', function scheduleCont
 			sc.freq_relative_interval = 0;
 			sc.freq_recurrence_factor = 0;
 
-			sc.active_start_date = new Date();
-			sc.active_start_time = new Date();
+			sc.active_start_date = moment(new Date()).startOf('day').toDate();
+			sc.active_start_time = moment(new Date()).startOf('hour').toDate();
 
-			sc.active_end_date = new Date();
-			sc.active_end_time = new Date();
+			sc.active_end_date = moment(new Date()).startOf('day').toDate();
+			sc.active_end_time = moment(new Date()).startOf('hour').toDate();
 
 			break;
 		case 4: //FreqType.Daily:
@@ -160,6 +164,7 @@ app.controller('scheduleController', ['$scope', '$filter', function scheduleCont
 
 //evaluates description property of scheduler everything any UI property is changed
 	function generateScheduleDescription() {
+		var timeformat = "hh:mm A";
 		var desc = "Occurs";
 		var sch = $scope.schedule;
 
@@ -167,7 +172,7 @@ app.controller('scheduleController', ['$scope', '$filter', function scheduleCont
 		switch (f) {
 		case 1: //FreqType.OneTimeOnly:
 			desc = desc + " on " + sch.active_start_date.toLocaleDateString() + " at "
-				 + sch.active_start_time.toLocaleTimeString();
+				 + moment(sch.active_start_time).format(timeformat);
 			break;
 		case 4: //FreqType.Daily:
 			desc = desc + " every " + sch.freq_interval + " day(s)";
@@ -237,12 +242,13 @@ app.controller('scheduleController', ['$scope', '$filter', function scheduleCont
 		desc = desc + freq_subday_type_str;
 
 		if ($scope.occuranceChoice == true) {
-			desc += " once at " + sch.active_start_time.toLocaleTimeString();
+			desc += " once at " + moment(sch.active_start_time).format(timeformat);
+			
 		}
 
 		if ($scope.occuranceChoice == false && (s == 2 || s == 4 || s == 8)) //if (s == FreqSubdayType.Hours || s == FreqSubdayType.Minutes || s == FreqSubdayType.Seconds)
-			desc += " between " + sch.active_start_time.toLocaleTimeString()
-			 + " and " + sch.active_end_time.toLocaleTimeString();
+			desc += " between " + moment(sch.active_start_time).format(timeformat)
+			 + " and " + moment(sch.active_end_time).format(timeformat);
 
 		var d = sch.duration_subday_type;
 		if (d == 2 || d == 4 || d == 8) {  //d == FreqSubdayType.Hours || d == FreqSubdayType.Minutes || d == FreqSubdayType.Seconds
@@ -267,10 +273,10 @@ app.controller('scheduleController', ['$scope', '$filter', function scheduleCont
 		desc += ".";
 		return desc;
 	}; //end generateScheduleDescription
-	
+		
 	$scope.init=function(){
 		$scope.freq_type = 4;
-		$scope.weeks = new Array(7);	
+		$scope.weeks = new Array(7);			
 	}
 	
 	$scope.init();
