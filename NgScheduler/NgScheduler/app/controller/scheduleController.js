@@ -1,5 +1,8 @@
 ﻿'use strict';
 app.controller('scheduleController', ['$scope', '$filter', 'moment', function scheduleController($scope, $filter, moment) {
+	var timeFormat = "hh:mm A";
+	var dateFormat = "YYYY/MM/DD";
+	var dateTimeFormat = dateFormat + ' ' + timeFormat;
 	
 	$scope.date = new moment();	 
 	 
@@ -85,14 +88,7 @@ app.controller('scheduleController', ['$scope', '$filter', 'moment', function sc
 
 	//raise an event whenever any property in schedule object is changed
 	$scope.$watch('schedule', function (newForm, oldForm) {
-		$scope.schedule.description = generateScheduleDescription();
-		var e = generateEvents();
-		var s='';
-		var i=0;
-		for(i=0;i<e.length;i++){
-			s+='\nstart: ' + e[i].start.toISOString() + ', end: ' + e[i].end.toISOString();			
-		}
-		alert(s);
+		$scope.schedule.description = generateScheduleDescription();		
 	}, true); //deep watch
 
 	//raise an event whenever occuranceChoice property is changed			 
@@ -103,6 +99,7 @@ app.controller('scheduleController', ['$scope', '$filter', 'moment', function sc
 	//raise an event whenever freq_type property is changed			 
 	$scope.$watch('schedule.freq_type', function (newValue, oldValue) {
 		var sc = $scope.schedule;
+		$scope.events = '';
 
 		switch (newValue) {
 		case 1: //FreqType.OneTimeOnly:
@@ -169,8 +166,7 @@ app.controller('scheduleController', ['$scope', '$filter', 'moment', function sc
 	}
 
 //evaluates description property of scheduler everything any UI property is changed
-	function generateScheduleDescription() {
-		var timeformat = "hh:mm A";
+	function generateScheduleDescription() {		
 		var desc = "Occurs";
 		var sch = $scope.schedule;
 
@@ -178,7 +174,7 @@ app.controller('scheduleController', ['$scope', '$filter', 'moment', function sc
 		switch (f) {
 		case 1: //FreqType.OneTimeOnly:
 			desc = desc + " on " + sch.active_start_date.toLocaleDateString() + " at "
-				 + moment(sch.active_start_time).format(timeformat);
+				 + moment(sch.active_start_time).format(timeFormat);
 			break;
 		case 4: //FreqType.Daily:
 			desc = desc + " every " + sch.freq_interval + " day(s)";
@@ -248,13 +244,12 @@ app.controller('scheduleController', ['$scope', '$filter', 'moment', function sc
 		desc = desc + freq_subday_type_str;
 
 		if ($scope.occuranceChoice == true) {
-			desc += " once at " + moment(sch.active_start_time).format(timeformat);
-			
+			desc += " once at " + moment(sch.active_start_time).format(timeFormat);			
 		}
 
 		if ($scope.occuranceChoice == false && (s == 2 || s == 4 || s == 8)) //if (s == FreqSubdayType.Hours || s == FreqSubdayType.Minutes || s == FreqSubdayType.Seconds)
-			desc += " between " + moment(sch.active_start_time).format(timeformat)
-			 + " and " + moment(sch.active_end_time).format(timeformat);
+			desc += " between " + moment(sch.active_start_time).format(timeFormat)
+			 + " and " + moment(sch.active_end_time).format(timeFormat);
 
 		var d = sch.duration_subday_type;
 		if (d == 2 || d == 4 || d == 8) {  //d == FreqSubdayType.Hours || d == FreqSubdayType.Minutes || d == FreqSubdayType.Seconds
@@ -280,7 +275,19 @@ app.controller('scheduleController', ['$scope', '$filter', 'moment', function sc
 		return desc;
 	}; //end generateScheduleDescription
 
-	function generateEvents(){
+	$scope.generateEventsClick = function(){
+		$scope.events  = generateEvents();
+		/*var s='';
+		var i=0;
+		for(i=0;i<e.length;i++){
+			s+='\nstart: ' + e[i].start.toISOString() + ', end: ' + e[i].end.toISOString();			
+		}
+		$scope.events = e;
+		*/
+	}
+	
+	 function generateEvents(){
+	
 		var events=[];
 		var sch = $scope.schedule;
 
@@ -289,12 +296,13 @@ app.controller('scheduleController', ['$scope', '$filter', 'moment', function sc
 		var f = sch.freq_type;
 		switch (f) {
 		case 1: //FreqType.OneTimeOnly:
-			var startDate = moment(moment(sch.active_start_date).format('YYYY/MM/DD') 
-									+ ' ' + moment(sch.active_start_time).format('HH:mm')
-									, "YYYY-MM-DD HH:mm").toDate();
-			var endDate = moment(moment(sch.active_end_date).format('YYYY/MM/DD') 
-									+ ' ' + moment(sch.active_end_time).format('HH:mm')
-									, "YYYY-MM-DD HH:mm").toDate();
+			
+			var startDate = moment(moment(sch.active_start_date).format(dateFormat) 
+									+ ' ' + moment(sch.active_start_time).format(timeFormat)
+									, dateTimeFormat).toDate();
+			var endDate = moment(moment(sch.active_end_date).format(dateFormat) 
+									+ ' ' + moment(sch.active_end_time).format(timeFormat)
+									, dateTimeFormat).toDate();
 						
 			if(sch.duration_interval > 0){
 				if(sch.duration_subday_type == 2){
@@ -307,10 +315,42 @@ app.controller('scheduleController', ['$scope', '$filter', 'moment', function sc
 					endDate = moment(startDate).add(sch.duration_interval, 'seconds');
 				}
 			}
-			events.push({start:startDate, end:endDate});			
+			events.push({start:startDate, end:endDate});
 			
 			break;
 		case 4: //FreqType.Daily:
+		
+			var nextDate = sch.active_start_date;
+			var recurEveryNDays = sch.freq_interval;
+			while(moment(nextDate).isAfter(sch.active_end_date) == false){
+				
+				var datePart = moment(nextDate).add(recurEveryNDays, 'days').format(dateFormat);
+				var timePart = moment(sch.active_start_time).format(timeFormat);
+				
+				if ($scope.occuranceChoice == true) {
+					nextDate =  moment(datePart + " " + timePart).toDate();
+				}
+				else if ($scope.occuranceChoice == false && (s == 2 || s == 4 || s == 8)){
+					break;
+				}
+				else{
+					break;
+				}
+			
+				if(sch.duration_interval > 0){
+					if(sch.duration_subday_type == 2){
+						endDate = moment(nextDate).add(sch.duration_interval, 'hours');
+					}
+					else if(sch.duration_subday_type == 4){
+						endDate = moment(nextDate).add(sch.duration_interval, 'minutes');
+					}
+					else if(sch.duration_subday_type == 8){
+						endDate = moment(nextDate).add(sch.duration_interval, 'seconds');
+					}
+				}
+			
+				events.push({start:nextDate, end:endDate});
+			}
 			
 			break;
 		case 8: //FreqType.Weekly:
