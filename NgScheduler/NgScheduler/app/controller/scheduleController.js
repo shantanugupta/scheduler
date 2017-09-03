@@ -17,13 +17,15 @@ app.controller('scheduleController', ['$scope', '$filter', 'moment', function sc
                 , { key: 128, value: 'Year long' }],
 
             freqIntervalWeekly:
-                    [{ key: 1, value: 'Monday' }
+                    [
+					{ key: 64, value: 'Sunday' }
+					, { key: 1, value: 'Monday' }
                     , { key: 2, value: 'Tuesday' }
                     , { key: 4, value: 'Wednesday' }
                     , { key: 8, value: 'Thursday' }
                     , { key: 16, value: 'Friday' }
                     , { key: 32, value: 'Saturday' }
-                    , { key: 64, value: 'Sunday' }],
+                    ],
 
             freqRelativeInterval:
                     [{ key: 0, value: 'Not applicable' }
@@ -40,13 +42,14 @@ app.controller('scheduleController', ['$scope', '$filter', 'moment', function sc
                     , { key: 8, value: 'Second(s)' }],
 
             freqIntervalMonthlyRelative:
-                    [{ key: 1, value: 'Monday' }
+                    [
+					 { key: 7, value: 'Sunday' }
+					, { key: 1, value: 'Monday' }
                     , { key: 2, value: 'Tuesday' }
                     , { key: 3, value: 'Wednesday' }
                     , { key: 4, value: 'Thursday' }
                     , { key: 5, value: 'Friday' }
-                    , { key: 6, value: 'Saturday' }
-                    , { key: 7, value: 'Sunday' }
+                    , { key: 6, value: 'Saturday' }                    
                     , { key: 8, value: 'Day' }
                     , { key: 9, value: 'Weekday' }
                     , { key: 10, value: 'Weekend day' }]
@@ -57,7 +60,13 @@ app.controller('scheduleController', ['$scope', '$filter', 'moment', function sc
 			'2': { min: 1, max: 24 },
 			'4': { min: 1, max: 60 },
 			'8': { min: 1, max: 60 },
-	};		
+	};
+
+	$scope.momentTimeValue = {
+				2: 'hours',
+				4: 'minutes',
+				8: 'seconds'
+		};	
 		
 	$scope.getGetOrdinal = function (n) {
 		if (n == undefined) {
@@ -305,51 +314,44 @@ app.controller('scheduleController', ['$scope', '$filter', 'moment', function sc
 									, dateTimeFormat).toDate();
 						
 			if(sch.duration_interval > 0){
-				if(sch.duration_subday_type == 2){
-					endDate = moment(startDate).add(sch.duration_interval, 'hours');
-				}
-				else if(sch.duration_subday_type == 4){
-					endDate = moment(startDate).add(sch.duration_interval, 'minutes');
-				}
-				else if(sch.duration_subday_type == 8){
-					endDate = moment(startDate).add(sch.duration_interval, 'seconds');
-				}
+				endDate = moment(startDate).add(sch.duration_interval, $scope.momentTimeValue[sch.duration_subday_type]);				
 			}
 			events.push({start:startDate, end:endDate});
 			
 			break;
-		case 4: //FreqType.Daily:
-		
-			var nextDate = sch.active_start_date;
-			var recurEveryNDays = sch.freq_interval;
-			while(moment(nextDate).isAfter(sch.active_end_date) == false){
-				
-				var datePart = moment(nextDate).add(recurEveryNDays, 'days').format(dateFormat);
-				var timePart = moment(sch.active_start_time).format(timeFormat);
-				
-				if ($scope.occuranceChoice == true) {
-					nextDate =  moment(datePart + " " + timePart).toDate();
-				}
-				else if ($scope.occuranceChoice == false && (s == 2 || s == 4 || s == 8)){
-					break;
-				}
-				else{
-					break;
-				}
+		case 4: //FreqType.Daily:			
 			
-				if(sch.duration_interval > 0){
-					if(sch.duration_subday_type == 2){
-						endDate = moment(nextDate).add(sch.duration_interval, 'hours');
-					}
-					else if(sch.duration_subday_type == 4){
-						endDate = moment(nextDate).add(sch.duration_interval, 'minutes');
-					}
-					else if(sch.duration_subday_type == 8){
-						endDate = moment(nextDate).add(sch.duration_interval, 'seconds');
-					}
-				}
+			var datePartEnd = moment(sch.active_end_date).format(dateFormat);
+			var timePartEnd = moment(sch.active_end_time).format(timeFormat);
+			var activeEndDate = moment(datePartEnd + " " + timePartEnd).toDate();
 			
-				events.push({start:nextDate, end:endDate});
+			var datePartStart = moment(sch.active_start_date).format(dateFormat);
+			var timePartStart = moment(sch.active_start_time).format(timeFormat);
+			var nextDate = moment(datePartStart + " " + timePartStart).toDate();		
+			
+			while(moment(nextDate).isAfter(activeEndDate) == false){
+				var s = sch.freq_subday_type;
+				if ($scope.occuranceChoice == false && (s == 2 || s == 4 || s == 8)){
+					var nextTime = nextDate;
+					var nextEndTime = moment(moment(nextDate).format(dateFormat) + " " + timePartEnd).toDate();
+					while(moment(nextTime).isAfter(nextEndTime) == false){
+						if(sch.duration_interval > 0){					
+							endDate = moment(nextTime).add(sch.duration_interval, $scope.momentTimeValue[sch.duration_subday_type]).toDate();
+						}
+						events.push({start:nextTime, end:endDate});	
+
+						nextTime = moment(nextTime).add(sch.freq_subday_interval, $scope.momentTimeValue[sch.freq_subday_type]).toDate();						
+					}
+				}else{					
+					if(sch.duration_interval > 0){					
+						endDate = moment(nextDate).add(sch.duration_interval, $scope.momentTimeValue[sch.duration_subday_type]);					
+					}
+					events.push({start:nextDate, end:endDate});	
+				}
+
+				datePartStart = moment(nextDate).add(sch.freq_interval, 'days').format(dateFormat);
+				timePartStart = moment(sch.active_start_time).format(timeFormat);
+				nextDate =  moment(datePartStart + " " + timePartStart).toDate();
 			}
 			
 			break;
