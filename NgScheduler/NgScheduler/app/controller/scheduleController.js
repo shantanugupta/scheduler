@@ -68,6 +68,16 @@ app.controller('scheduleController', ['$scope', '$filter', 'moment', function sc
 				8: 'seconds'
 		};	
 		
+	$scope.momentWeek = {
+				'Monday' :1,
+				'Tuesday':2,
+				'Wednesday':3,
+				'Thursday':4,
+				'Friday':5,
+				'Saturday':6,
+				'Sunday':7
+		};
+		
 	$scope.getGetOrdinal = function (n) {
 		if (n == undefined) {
 			return "Nth"
@@ -319,21 +329,20 @@ app.controller('scheduleController', ['$scope', '$filter', 'moment', function sc
 			events.push({start:startDate, end:endDate});
 			
 			break;
-		case 4: //FreqType.Daily:			
+		case 4: //FreqType.Daily:
 			
-			var datePartEnd = moment(sch.active_end_date).format(dateFormat);
-			var timePartEnd = moment(sch.active_end_time).format(timeFormat);
-			var activeEndDate = moment(datePartEnd + " " + timePartEnd).toDate();
+			var endTimeInSeconds = moment.duration(moment(sch.active_end_time).diff(moment(sch.active_end_time).startOf('day').toDate())).asSeconds();					
+			var activeEndDate = moment(sch.active_end_date).startOf('days').add(endTimeInSeconds, 'seconds').toDate();
 			
-			var datePartStart = moment(sch.active_start_date).format(dateFormat);
-			var timePartStart = moment(sch.active_start_time).format(timeFormat);
-			var nextDate = moment(datePartStart + " " + timePartStart).toDate();		
-			
+			var startTimeInSeconds = moment.duration(moment(sch.active_start_time).diff(moment(sch.active_end_time).startOf('day').toDate())).asSeconds();
+			var nextDate = moment(sch.active_start_date).startOf('days').add(startTimeInSeconds, 'seconds').toDate();
+					
 			while(moment(nextDate).isAfter(activeEndDate) == false){
 				var s = sch.freq_subday_type;
 				if ($scope.occuranceChoice == false && (s == 2 || s == 4 || s == 8)){
-					var nextTime = nextDate;
-					var nextEndTime = moment(moment(nextDate).format(dateFormat) + " " + timePartEnd).toDate();
+					var nextTime = nextDate;					
+					var nextEndTime = moment(nextDate).startOf('days').add(endTimeInSeconds, 'seconds').toDate();
+					
 					while(moment(nextTime).isAfter(nextEndTime) == false){
 						if(sch.duration_interval > 0){					
 							endDate = moment(nextTime).add(sch.duration_interval, $scope.momentTimeValue[sch.duration_subday_type]).toDate();
@@ -348,10 +357,8 @@ app.controller('scheduleController', ['$scope', '$filter', 'moment', function sc
 					}
 					events.push({start:nextDate, end:endDate});	
 				}
-
-				datePartStart = moment(nextDate).add(sch.freq_interval, 'days').format(dateFormat);
-				timePartStart = moment(sch.active_start_time).format(timeFormat);
-				nextDate =  moment(datePartStart + " " + timePartStart).toDate();
+				
+				nextDate = moment(nextDate).add(sch.freq_interval, 'days').startOf('days').add(startTimeInSeconds, 'seconds').toDate();											
 			}			
 			break;
 		case 8: //FreqType.Weekly:			
@@ -373,21 +380,25 @@ app.controller('scheduleController', ['$scope', '$filter', 'moment', function sc
 				var i=0;
 				for(i=0;i<selectedWeekDays.length;i++){
 					var weekDay = selectedWeekDays[i];
+															
+					//$scope.weeks					
+					var endTimeInSeconds = moment.duration(moment(sch.active_end_time).diff(moment(sch.active_end_time).startOf('day').toDate())).asSeconds();					
+					var activeEndDate = moment(sch.active_end_date).startOf('days').add(endTimeInSeconds, 'seconds').toDate();
 					
-					//$scope.weeks
-					var datePartEnd = moment(sch.active_end_date).format(dateFormat);
-					var timePartEnd = moment(sch.active_end_time).format(timeFormat);
-					var activeEndDate = moment(datePartEnd + " " + timePartEnd).toDate();
+					var startTimeInSeconds = moment.duration(moment(sch.active_start_time).diff(moment(sch.active_end_time).startOf('day').toDate())).asSeconds();
+					var nextDate = moment(sch.active_start_date).startOf('days').add(startTimeInSeconds, 'seconds').toDate();
 					
-					var datePartStart = moment(sch.active_start_date).format(dateFormat);
-					var timePartStart = moment(sch.active_start_time).format(timeFormat);
-					var nextDate = moment(datePartStart + " " + timePartStart).toDate();		
+					if(moment(nextDate).isoWeekday() <= $scope.momentWeek[weekDay.value])					
+						nextDate = moment(nextDate).isoWeekday($scope.momentWeek[weekDay.value]).toDate();
+					else
+						nextDate = moment(nextDate).add(1, 'weeks').isoWeekday($scope.momentWeek[weekDay.value]).toDate();
 					
 					while(moment(nextDate).isAfter(activeEndDate) == false){
 						var s = sch.freq_subday_type;
 						if ($scope.occuranceChoice == false && (s == 2 || s == 4 || s == 8)){
 							var nextTime = nextDate;
-							var nextEndTime = moment(moment(nextDate).format(dateFormat) + " " + timePartEnd).toDate();
+							var nextEndTime = moment(nextDate).startOf('days').add(endTimeInSeconds, 'seconds').toDate();
+							
 							while(moment(nextTime).isAfter(nextEndTime) == false){
 								if(sch.duration_interval > 0){					
 									endDate = moment(nextTime).add(sch.duration_interval, $scope.momentTimeValue[sch.duration_subday_type]).toDate();
@@ -402,11 +413,8 @@ app.controller('scheduleController', ['$scope', '$filter', 'moment', function sc
 							}
 							events.push({start:nextDate, end:endDate});	
 						}
-
-						datePartStart = moment(nextDate).add(sch.freq_recurrence_factor, 'weeks').format(dateFormat);
-						timePartStart = moment(sch.active_start_time).format(timeFormat);
-						nextDate =  moment(datePartStart + " " + timePartStart).toDate();
-					
+						
+						nextDate = moment(nextDate).add(sch.freq_recurrence_factor, 'weeks').startOf('days').add(startTimeInSeconds, 'seconds').toDate();											
 					}//end outer while
 				}//end for loop
 			}//end if selectedWeekDays
