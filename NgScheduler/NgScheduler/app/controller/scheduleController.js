@@ -352,11 +352,64 @@ app.controller('scheduleController', ['$scope', '$filter', 'moment', function sc
 				datePartStart = moment(nextDate).add(sch.freq_interval, 'days').format(dateFormat);
 				timePartStart = moment(sch.active_start_time).format(timeFormat);
 				nextDate =  moment(datePartStart + " " + timePartStart).toDate();
+			}			
+			break;
+		case 8: //FreqType.Weekly:			
+			var selectedWeekDays = [];			
+			var loop = 1;
+			while (loop <= 7) {
+				var power = Math.pow(2, loop - 1);
+				if ((sch.freq_interval & power) == power) {
+					var val = $scope.scheduler.freqIntervalWeekly.filter(function (f) {
+							if (f.key == power)
+								return f;
+						})[0];
+					selectedWeekDays.push(val);
+				}
+				loop++;
 			}
 			
-			break;
-		case 8: //FreqType.Weekly:
-						
+			if(selectedWeekDays!=undefined || selectedWeekDays.length>0){
+				var i=0;
+				for(i=0;i<selectedWeekDays.length;i++){
+					var weekDay = selectedWeekDays[i];
+					
+					//$scope.weeks
+					var datePartEnd = moment(sch.active_end_date).format(dateFormat);
+					var timePartEnd = moment(sch.active_end_time).format(timeFormat);
+					var activeEndDate = moment(datePartEnd + " " + timePartEnd).toDate();
+					
+					var datePartStart = moment(sch.active_start_date).format(dateFormat);
+					var timePartStart = moment(sch.active_start_time).format(timeFormat);
+					var nextDate = moment(datePartStart + " " + timePartStart).toDate();		
+					
+					while(moment(nextDate).isAfter(activeEndDate) == false){
+						var s = sch.freq_subday_type;
+						if ($scope.occuranceChoice == false && (s == 2 || s == 4 || s == 8)){
+							var nextTime = nextDate;
+							var nextEndTime = moment(moment(nextDate).format(dateFormat) + " " + timePartEnd).toDate();
+							while(moment(nextTime).isAfter(nextEndTime) == false){
+								if(sch.duration_interval > 0){					
+									endDate = moment(nextTime).add(sch.duration_interval, $scope.momentTimeValue[sch.duration_subday_type]).toDate();
+								}
+								events.push({start:nextTime, end:endDate});	
+
+								nextTime = moment(nextTime).add(sch.freq_subday_interval, $scope.momentTimeValue[sch.freq_subday_type]).toDate();						
+							}
+						}else{					
+							if(sch.duration_interval > 0){					
+								endDate = moment(nextDate).add(sch.duration_interval, $scope.momentTimeValue[sch.duration_subday_type]);					
+							}
+							events.push({start:nextDate, end:endDate});	
+						}
+
+						datePartStart = moment(nextDate).add(sch.freq_recurrence_factor, 'weeks').format(dateFormat);
+						timePartStart = moment(sch.active_start_time).format(timeFormat);
+						nextDate =  moment(datePartStart + " " + timePartStart).toDate();
+					
+					}//end outer while
+				}//end for loop
+			}//end if selectedWeekDays
 			break;
 		case 16: //FreqType.Monthly:
 			
