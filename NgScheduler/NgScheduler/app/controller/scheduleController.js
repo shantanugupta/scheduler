@@ -419,8 +419,37 @@ app.controller('scheduleController', ['$scope', '$filter', 'moment', function sc
 				}//end for loop
 			}//end if selectedWeekDays
 			break;
-		case 16: //FreqType.Monthly:
-			
+		case 16: //FreqType.Monthly:												
+			//$scope.weeks					
+			var endTimeInSeconds = moment.duration(moment(sch.active_end_time).diff(moment(sch.active_end_time).startOf('day').toDate())).asSeconds();					
+			var activeEndDate = moment(sch.active_end_date).startOf('days').add(endTimeInSeconds, 'seconds').toDate();
+
+			var startTimeInSeconds = moment.duration(moment(sch.active_start_time).diff(moment(sch.active_end_time).startOf('day').toDate())).asSeconds();
+			var nextDate = moment(sch.active_start_date).startOf('month').add(sch.freq_interval, 'days').add(startTimeInSeconds, 'seconds').toDate();					
+
+			while(moment(nextDate).isAfter(activeEndDate) == false){
+				var s = sch.freq_subday_type;
+				if ($scope.occuranceChoice == false && (s == 2 || s == 4 || s == 8)){
+					var nextTime = nextDate;
+					var nextEndTime = moment(nextDate).startOf('days').add(endTimeInSeconds, 'seconds').toDate();
+					
+					while(moment(nextTime).isAfter(nextEndTime) == false){
+						if(sch.duration_interval > 0){					
+							endDate = moment(nextTime).add(sch.duration_interval, $scope.momentTimeValue[sch.duration_subday_type]).toDate();
+						}
+						events.push({start:nextTime, end:endDate});	
+
+						nextTime = moment(nextTime).add(sch.freq_subday_interval, $scope.momentTimeValue[sch.freq_subday_type]).toDate();						
+					}
+				}else{					
+					if(sch.duration_interval > 0){					
+						endDate = moment(nextDate).add(sch.duration_interval, $scope.momentTimeValue[sch.duration_subday_type]);					
+					}
+					events.push({start:nextDate, end:endDate});	
+				}
+				
+				nextDate = moment(nextDate).add(sch.freq_recurrence_factor, 'month').startOf('month').add(sch.freq_interval, 'days').add(startTimeInSeconds, 'seconds').toDate();											
+			}//end outer while	
 			break;
 		case 32: //FreqType.MonthlyRelativeToFreqInterval:
 			
