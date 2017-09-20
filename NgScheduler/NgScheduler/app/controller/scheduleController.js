@@ -18,28 +18,28 @@ app.controller('scheduleController', ['$scope', '$filter', 'moment', function sc
 
             freqIntervalWeekly:
                     [
-					{ key: 64, value: 'Sunday' }
-					, { key: 1, value: 'Monday' }
-                    , { key: 2, value: 'Tuesday' }
-                    , { key: 4, value: 'Wednesday' }
-                    , { key: 8, value: 'Thursday' }
-                    , { key: 16, value: 'Friday' }
-                    , { key: 32, value: 'Saturday' }
+					{ key: 64, value: 'Sunday', identifier: 7}
+					, { key: 1, value: 'Monday', identifier: 1}
+                    , { key: 2, value: 'Tuesday', identifier: 2}
+                    , { key: 4, value: 'Wednesday', identifier: 3}
+                    , { key: 8, value: 'Thursday', identifier: 4}
+                    , { key: 16, value: 'Friday', identifier: 5}
+                    , { key: 32, value: 'Saturday', identifier: 6}
                     ],
 
             freqRelativeInterval:
-                    [{ key: 0, value: 'Not applicable' }
-                    , { key: 1, value: 'First' }
-                    , { key: 2, value: 'Second' }
-                    , { key: 4, value: 'Third' }
-                    , { key: 8, value: 'Fourth' }
-                    , { key: 16, value: 'Last' }],
+                    [{ key: 0, value: 'Not applicable', identifier:0 }
+                    , { key: 1, value: 'First', identifier:1 }
+                    , { key: 2, value: 'Second', identifier:2 }
+                    , { key: 4, value: 'Third', identifier:3 }
+                    , { key: 8, value: 'Fourth', identifier:4 }
+                    , { key: 16, value: 'Last', identifier:5 }],
 
             freqSubdayType:
-                    [{ key: 1, value: 'At specified time' }
-                    , { key: 2, value: 'Hour(s)' }
-                    , { key: 4, value: 'Minute(s)' }
-                    , { key: 8, value: 'Second(s)' }],
+                    [{ key: 1, value: 'At specified time', identifier:'not applicable' }
+                    , { key: 2, value: 'Hour(s)', identifier:'hours' }
+                    , { key: 4, value: 'Minute(s)', identifier:'minutes' }
+                    , { key: 8, value: 'Second(s)' , identifier:'seconds'}],
 
             freqIntervalMonthlyRelative:
                     [
@@ -76,6 +76,14 @@ app.controller('scheduleController', ['$scope', '$filter', 'moment', function sc
 				'Friday':5,
 				'Saturday':6,
 				'Sunday':7
+		};
+		
+	$scope.momentfreqRelativeInterval = {
+                    'First':1
+                    ,'Second':2
+                    ,'Third':3
+                    ,'Fourth':4
+					,'Last':5
 		};
 		
 	$scope.getGetOrdinal = function (n) {
@@ -324,7 +332,12 @@ app.controller('scheduleController', ['$scope', '$filter', 'moment', function sc
 									, dateTimeFormat).toDate();
 						
 			if(sch.duration_interval > 0){
-				endDate = moment(startDate).add(sch.duration_interval, $scope.momentTimeValue[sch.duration_subday_type]);				
+				var a = $scope.scheduler.freqSubdayType.filter(function(f){if(f.key == sch.duration_subday_type)return f;});
+				
+				if(a.length>0){
+					var identifier = a[0].identifier;
+					endDate = moment(startDate).add(sch.duration_interval, identifier);				
+				}
 			}
 			events.push({start:startDate, end:endDate});
 			
@@ -458,35 +471,41 @@ app.controller('scheduleController', ['$scope', '$filter', 'moment', function sc
 			var activeEndDate = moment(sch.active_end_date).startOf('days').add(endTimeInSeconds, 'seconds').toDate();
 
 			var startTimeInSeconds = moment.duration(moment(sch.active_start_time).diff(moment(sch.active_end_time).startOf('day').toDate())).asSeconds();
-			var nextDate = moment(sch.active_start_date).startOf('month').add(sch.freq_interval-1, 'days').add(startTimeInSeconds, 'seconds').toDate();					
-
-			if(moment(nextDate).isBefore(sch.active_start_date)==true)
-				nextDate = moment(nextDate).add(1, 'month').toDate();
+			var activeStartDate = moment(sch.active_start_date).startOf('days').add(startTimeInSeconds, 'seconds').toDate();					
+			nextDate = activeStartDate;
 			
-			while(moment(nextDate).isAfter(activeEndDate) == false){
-				var s = sch.freq_subday_type;
-				if ($scope.occuranceChoice == false && (s == 2 || s == 4 || s == 8)){
-					var nextTime = nextDate;
-					var nextEndTime = moment(nextDate).startOf('days').add(endTimeInSeconds, 'seconds').toDate();
-					
-					while(moment(nextTime).isAfter(nextEndTime) == false){
-						if(sch.duration_interval > 0){					
-							endDate = moment(nextTime).add(sch.duration_interval, $scope.momentTimeValue[sch.duration_subday_type]).toDate();
-						}
-						events.push({start:nextTime, end:endDate});	
+			var firstSecThrdFrthLast = Math.log2(sch.freq_relative_interval);
+			var  weekdayWeekendSunToMon = sch.freq_interval;
 
-						nextTime = moment(nextTime).add(sch.freq_subday_interval, $scope.momentTimeValue[sch.freq_subday_type]).toDate();						
-					}
-				}else{					
-					if(sch.duration_interval > 0){					
-						endDate = moment(nextDate).add(sch.duration_interval, $scope.momentTimeValue[sch.duration_subday_type]);					
-					}
-					events.push({start:nextDate, end:endDate});	
-				}
+			if(weekdayWeekendSunToMon >= 1 && weekdayWeekendSunToMon <=7){//sunday to saturday
+				var startOfMonth = moment(nextDate).startOf('month').toDate();
+				var endOfMonth = moment(nextDate).endOf('month').toDate();
 				
-				nextDate = moment(nextDate).add(sch.freq_recurrence_factor, 'month').startOf('month').add(sch.freq_interval-1, 'days').add(startTimeInSeconds, 'seconds').toDate();											
-			}//end outer while	
-			break;			
+				var s = (moment(startOfMonth).weekday() <= weekdayWeekendSunToMon ? weekdayWeekendSunToMon - moment(startOfMonth).weekday() 
+						: 7 - moment(startOfMonth).weekday() + weekdayWeekendSunToMon)%7;
+							
+				var e = (moment(endOfMonth).weekday() >=	weekdayWeekendSunToMon ? -1*(moment(endOfMonth).weekday() - weekdayWeekendSunToMon)
+						: -1*(7 - weekdayWeekendSunToMon + moment(endOfMonth).weekday()))%7;
+
+				var first = moment(startOfMonth).add(s, 'days').toDate();
+				var last = moment(endOfMonth).add(e, 'days').toDate();
+
+				var nth = moment(first).add(firstSecThrdFrthLast, 'weeks').toDate();
+				if(moment(nth).isAfter(last))
+					nth = last;
+				
+				nextDate = nth;
+			}
+			else if(weekdayWeekendSunToMon == 8){//day
+								
+			}
+			else if(weekdayWeekendSunToMon == 9){//weekday
+								
+			}
+			else if(weekdayWeekendSunToMon == 10){//weekend
+								
+			}
+			
 			break;
 		} //END SWITCH FreqType variations
 
