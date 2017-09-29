@@ -380,7 +380,7 @@ app.controller('scheduleController', ['$scope', '$filter', 'moment', function sc
 			while (loop <= 7) {
 				var power = Math.pow(2, loop - 1);
 				if ((sch.freq_interval & power) == power) {
-					var val = $scope.scheduler.freqIntervalWeekly.filter(function (f) {
+					var val = $scope.scheduler.freqIntervalWeekly.filter(function (f){
 							if (f.key == power)
 								return f;
 						})[0];
@@ -476,36 +476,109 @@ app.controller('scheduleController', ['$scope', '$filter', 'moment', function sc
 			
 			var firstSecThrdFrthLast = Math.log2(sch.freq_relative_interval);
 			var  weekdayWeekendSunToMon = sch.freq_interval;
-
-			if(weekdayWeekendSunToMon >= 1 && weekdayWeekendSunToMon <=7){//sunday to saturday
-				var startOfMonth = moment(nextDate).startOf('month').toDate();
-				var endOfMonth = moment(nextDate).endOf('month').toDate();
-				
-				var s = (moment(startOfMonth).weekday() <= weekdayWeekendSunToMon ? weekdayWeekendSunToMon - moment(startOfMonth).weekday() 
-						: 7 - moment(startOfMonth).weekday() + weekdayWeekendSunToMon)%7;
-							
-				var e = (moment(endOfMonth).weekday() >=	weekdayWeekendSunToMon ? -1*(moment(endOfMonth).weekday() - weekdayWeekendSunToMon)
-						: -1*(7 - weekdayWeekendSunToMon + moment(endOfMonth).weekday()))%7;
-
-				var first = moment(startOfMonth).add(s, 'days').toDate();
-				var last = moment(endOfMonth).add(e, 'days').toDate();
-
-				var nth = moment(first).add(firstSecThrdFrthLast, 'weeks').toDate();
-				if(moment(nth).isAfter(last))
-					nth = last;
-				
-				nextDate = nth;
-			}
-			else if(weekdayWeekendSunToMon == 8){//day
-								
-			}
-			else if(weekdayWeekendSunToMon == 9){//weekday
-								
-			}
-			else if(weekdayWeekendSunToMon == 10){//weekend
-								
-			}
 			
+			while(moment(nextDate).isAfter(activeEndDate) == false){
+					var startOfMonth = moment(nextDate).startOf('month').toDate();
+					var endOfMonth = moment(nextDate).endOf('month').startOf('day').toDate();
+					
+				if(weekdayWeekendSunToMon >= 1 && weekdayWeekendSunToMon <=7){//sunday to saturday				
+					var s = (moment(startOfMonth).weekday() <= weekdayWeekendSunToMon ? weekdayWeekendSunToMon - moment(startOfMonth).weekday() 
+							: 7 - moment(startOfMonth).weekday() + weekdayWeekendSunToMon)%7;
+								
+					var e = (moment(endOfMonth).weekday() >=	weekdayWeekendSunToMon ? -1*(moment(endOfMonth).weekday() - weekdayWeekendSunToMon)
+							: -1*(7 - weekdayWeekendSunToMon + moment(endOfMonth).weekday()))%7;
+
+					var first = moment(startOfMonth).add(s, 'days').toDate();
+					var last = moment(endOfMonth).add(e, 'days').toDate();
+
+					var nth = moment(first).add(firstSecThrdFrthLast, 'weeks').toDate();
+					if(moment(nth).isAfter(last))
+						nth = last;
+					
+					nextDate = moment(nth).add(startTimeInSeconds, 'seconds').toDate();
+				}
+				else if(weekdayWeekendSunToMon == 8){//day					
+					if(firstSecThrdFrthLast==4){//last day of the month
+						nextDate = moment(endOfMonth).add(startTimeInSeconds, 'seconds').toDate();
+					}
+					else{//1st or 2nd or 3rd or 4th day of the month
+						nextDate = moment(startOfMonth).add(firstSecThrdFrthLast, 'days').add(startTimeInSeconds, 'seconds').toDate();
+					}
+				}
+				else if(weekdayWeekendSunToMon == 9){//weekday				
+					var day = 0;					
+					if(firstSecThrdFrthLast==4){//last day of the month
+						day = moment(endOfMonth).weekday();
+						if(day==0){//end of the month is sunday
+							nextDate = moment(endOfMonth).add(-2, 'days').add(startTimeInSeconds, 'seconds').toDate();//subtract saturday and sunday
+						}else if(day==6){//end of the month is saturday
+							nextDate = moment(endOfMonth).add(-1, 'days').add(startTimeInSeconds, 'seconds').toDate();//subtract saturday
+						}else{
+							nextDate = moment(endOfMonth).add(startTimeInSeconds, 'seconds').toDate();//its already a weekday
+						}						
+					}
+					else{//1st or 2nd or 3rd or 4th day of the month
+						day = moment(startOfMonth).weekday();
+						if(day==0){
+							nextDate = moment(startOfMonth).add(1 + firstSecThrdFrthLast, 'days').add(startTimeInSeconds, 'seconds').toDate();
+						}else if(day==6){
+							nextDate = moment(startOfMonth).add(2 + firstSecThrdFrthLast, 'days').add(startTimeInSeconds, 'seconds').toDate();
+						}else{
+							nextDate = moment(startOfMonth).add(firstSecThrdFrthLast, 'days').add(startTimeInSeconds, 'seconds').toDate();
+						}						
+					}
+				}
+				else if(weekdayWeekendSunToMon == 10){//weekend day
+					if(firstSecThrdFrthLast==4){//last weekend day
+						day = moment(endOfMonth).weekday();
+						if((new Set([1,2,3,4,5])).has(day)==true){//end of the month is any weekday
+							nextDate = moment(endOfMonth).add(-1*day, 'days').add(startTimeInSeconds, 'seconds').toDate();
+						}else{//end of the month is any weekend day
+							nextDate = moment(endOfMonth).add(startTimeInSeconds, 'seconds').toDate();							
+						}						
+					}
+					else{//1st, 2nd, 3rd, 4th weekend day
+						day = moment(startOfMonth).weekday();
+						var delta = 0;
+						if((new Set([1,2,3,4,5,6])).has(day)==true){//1st of the month is anything other than Sunday
+							delta = firstSecThrdFrthLast > 1 ? 7 + firstSecThrdFrthLast%2 :firstSecThrdFrthLast;
+							nextDate = moment(startOfMonth).add(6-day + delta, 'days').add(startTimeInSeconds, 'seconds').toDate();					
+						}else if(day==0){//1st of the month is Sunday
+							if(firstSecThrdFrthLast==0){//first weekend day
+								nextDate = moment(startOfMonth).add(startTimeInSeconds, 'seconds').toDate();					
+							}else if((new Set([1,2])).has(firstSecThrdFrthLast)==true){//2nd or 3rd weekend day
+								nextDate = moment(startOfMonth).add(7+firstSecThrdFrthLast, 'days').add(startTimeInSeconds, 'seconds').toDate();
+							}else if(firstSecThrdFrthLast==3){//4th weekend day  
+								nextDate = moment(startOfMonth).add(0 + 7 + 6, 'days').add(startTimeInSeconds, 'seconds').toDate();
+							}
+						}
+					}				
+				}
+				
+				var s = sch.freq_subday_type;
+				if ($scope.occuranceChoice == false && (s == 2 || s == 4 || s == 8)){
+					var nextTime = nextDate;
+					var nextEndTime = moment(nextDate).startOf('days').add(endTimeInSeconds, 'seconds').toDate();
+					
+					while(moment(nextTime).isAfter(nextEndTime) == false){
+						if(sch.duration_interval > 0){					
+							endDate = moment(nextTime).add(sch.duration_interval, $scope.momentTimeValue[sch.duration_subday_type]).toDate();
+						}
+						events.push({start:nextTime, end:endDate});	
+
+						nextTime = moment(nextTime).add(sch.freq_subday_interval, $scope.momentTimeValue[sch.freq_subday_type]).toDate();						
+					}
+				}else{					
+					if(sch.duration_interval > 0){					
+						endDate = moment(nextDate).add(sch.duration_interval, $scope.momentTimeValue[sch.duration_subday_type]).toDate();					
+					}
+					events.push({start:nextDate, end:endDate});	
+				}
+				
+				
+				
+				nextDate = moment(nextDate).add(sch.freq_recurrence_factor, 'month').startOf('month').add(startTimeInSeconds, 'seconds').toDate();																			
+			}//end While loop
 			break;
 		} //END SWITCH FreqType variations
 

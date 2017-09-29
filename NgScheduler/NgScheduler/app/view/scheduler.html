@@ -1,4 +1,4 @@
-<div class=col-lg-8>
+<div class=col-lg-12>
 	<div class="row">
 		<div>
 			<div class="form-group">
@@ -124,13 +124,13 @@
 	<div class="row">
 		<ul class="nav nav-tabs" ng-repeat="e in events">
 			<li>			
-				<strong>Start:</strong>{{e.start}}<strong>End:</strong>{{e.end}}
+				<strong>Start:</strong>{{e.start.toLocaleString()}}<strong>End:</strong>{{e.end.toLocaleString()}}
 			</li>
 		</ul>	
 	</div>
 </div>
 
-<div class="col-lg-4" ng-hide="false">
+<div class="col-lg-4" ng-hide="true">
 	<div>
 		<pre>{{schedule | json}}</pre>
 	</div>
