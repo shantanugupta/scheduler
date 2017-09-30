@@ -540,16 +540,17 @@ app.controller('scheduleController', ['$scope', '$filter', 'moment', function sc
 					else{//1st, 2nd, 3rd, 4th weekend day
 						day = moment(startOfMonth).weekday();
 						var delta = 0;
-						if((new Set([1,2,3,4,5,6])).has(day)==true){//1st of the month is anything other than Sunday
-							delta = firstSecThrdFrthLast > 1 ? 7 + firstSecThrdFrthLast%2 :firstSecThrdFrthLast;
-							nextDate = moment(startOfMonth).add(6-day + delta, 'days').add(startTimeInSeconds, 'seconds').toDate();					
-						}else if(day==0){//1st of the month is Sunday
+						if(day!=0){//1st of the month is anything other than Sunday
+							var delta = 6 - day + ( (firstSecThrdFrthLast<=1) ?firstSecThrdFrthLast:7 + firstSecThrdFrthLast%2 );
+							nextDate = moment(startOfMonth).add(delta, 'days').add(startTimeInSeconds, 'seconds').toDate();
+						}else if(day==0){//1st of the month is Sunday //(1st Oct 2017 = Sunday i.e. day == 0)
 							if(firstSecThrdFrthLast==0){//first weekend day
 								nextDate = moment(startOfMonth).add(startTimeInSeconds, 'seconds').toDate();					
 							}else if((new Set([1,2])).has(firstSecThrdFrthLast)==true){//2nd or 3rd weekend day
-								nextDate = moment(startOfMonth).add(7+firstSecThrdFrthLast, 'days').add(startTimeInSeconds, 'seconds').toDate();
-							}else if(firstSecThrdFrthLast==3){//4th weekend day  
-								nextDate = moment(startOfMonth).add(0 + 7 + 6, 'days').add(startTimeInSeconds, 'seconds').toDate();
+								//move to saturday of next week from sunday of current week
+								nextDate = moment(startOfMonth).add(6+firstSecThrdFrthLast-1, 'days').add(startTimeInSeconds, 'seconds').toDate();
+							}else if(firstSecThrdFrthLast==3){//4th weekend day 							
+								nextDate = moment(startOfMonth).add(1, 'week').add(6, 'days').add(startTimeInSeconds, 'seconds').toDate();
 							}
 						}
 					}				
@@ -574,9 +575,7 @@ app.controller('scheduleController', ['$scope', '$filter', 'moment', function sc
 					}
 					events.push({start:nextDate, end:endDate});	
 				}
-				
-				
-				
+
 				nextDate = moment(nextDate).add(sch.freq_recurrence_factor, 'month').startOf('month').add(startTimeInSeconds, 'seconds').toDate();																			
 			}//end While loop
 			break;
