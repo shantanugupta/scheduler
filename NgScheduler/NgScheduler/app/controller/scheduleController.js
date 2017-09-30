@@ -517,15 +517,17 @@ app.controller('scheduleController', ['$scope', '$filter', 'moment', function sc
 							nextDate = moment(endOfMonth).add(startTimeInSeconds, 'seconds').toDate();//its already a weekday
 						}						
 					}
-					else{//1st or 2nd or 3rd or 4th day of the month
+					else{//1st or 2nd or 3rd or 4th day of the month					
 						day = moment(startOfMonth).weekday();
-						if(day==0){
-							nextDate = moment(startOfMonth).add(1 + firstSecThrdFrthLast, 'days').add(startTimeInSeconds, 'seconds').toDate();
-						}else if(day==6){
-							nextDate = moment(startOfMonth).add(2 + firstSecThrdFrthLast, 'days').add(startTimeInSeconds, 'seconds').toDate();
-						}else{
-							nextDate = moment(startOfMonth).add(firstSecThrdFrthLast, 'days').add(startTimeInSeconds, 'seconds').toDate();
-						}						
+						day = day==0?7:day;
+						
+						if(day + firstSecThrdFrthLast <6){
+							nextDate = moment(startOfMonth).add(firstSecThrdFrthLast, 'days').add(startTimeInSeconds, 'seconds').toDate();	
+						}
+						else{
+							var delta = day<7?2:1;
+							nextDate = moment(startOfMonth).add(firstSecThrdFrthLast + delta, 'days').add(startTimeInSeconds, 'seconds').toDate();	
+						}				
 					}
 				}
 				else if(weekdayWeekendSunToMon == 10){//weekend day
