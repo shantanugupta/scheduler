@@ -39,7 +39,8 @@ app.controller('scheduleController', ['$scope', '$filter', 'moment', function sc
                     [{ key: 1, value: 'At specified time', identifier:'not applicable' }
                     , { key: 2, value: 'Hour(s)', identifier:'hours' }
                     , { key: 4, value: 'Minute(s)', identifier:'minutes' }
-                    , { key: 8, value: 'Second(s)' , identifier:'seconds'}],
+                    //, { key: 8, value: 'Second(s)' , identifier:'seconds'}
+					],
 
             freqIntervalMonthlyRelative:
                     [
@@ -304,13 +305,6 @@ app.controller('scheduleController', ['$scope', '$filter', 'moment', function sc
 
 	$scope.generateEventsClick = function(){
 		$scope.events  = generateEvents();
-		/*var s='';
-		var i=0;
-		for(i=0;i<e.length;i++){
-			s+='\nstart: ' + e[i].start.toISOString() + ', end: ' + e[i].end.toISOString();			
-		}
-		$scope.events = e;
-		*/
 	}
 	
 	 function generateEvents(){

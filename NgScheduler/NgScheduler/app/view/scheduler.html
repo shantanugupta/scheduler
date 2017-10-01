@@ -26,10 +26,10 @@
 					<a data-toggle="tab" ng-click="schedule.freq_type=32" href="#freqType32">Monthly Relative</a>
 				</li>
 				
-				<li ng-class="{'active' : schedule.freq_type==64 }">
+				<li ng-class="{'active' : schedule.freq_type==64 }" ng-hide="true">
 					<a data-toggle="tab" ng-click="schedule.freq_type=64" href="#freqType64">Yearly</a>
 				</li>
-				<li ng-class="{'active' : schedule.freq_type==128 }">
+				<li ng-class="{'active' : schedule.freq_type==128 }" ng-hide="true">
 					<a data-toggle="tab" ng-click="schedule.freq_type=128" href="#freqType128">Year long</a>
 				</li>
 				
